@@ -13,12 +13,21 @@
 declare(strict_types=1);
 
 // ---- Database (edit these for your host) ----
-define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');
-define('DB_NAME', 'REPLACE_WITH_YOUR_DB_NAME');   // <-- from hPanel Databases
-define('DB_USER', 'REPLACE_WITH_YOUR_DB_USER');   // <-- from hPanel Databases
-define('DB_PASS', 'REPLACE_WITH_YOUR_DB_PASSWORD'); // <-- from hPanel Databases
-define('DB_CHARSET', 'utf8mb4');
+// Real credentials live in config.local.php, which is gitignored and never
+// committed. Copy config.local.php.example -> config.local.php and fill in
+// your values (locally for XAMPP, and again directly on the live server —
+// upload it there separately since it won't come through git).
+$localDbConfig = __DIR__ . '/config.local.php';
+if (file_exists($localDbConfig)) {
+    require $localDbConfig;
+} else {
+    define('DB_HOST', 'localhost');
+    define('DB_PORT', '3306');
+    define('DB_NAME', 'REPLACE_WITH_YOUR_DB_NAME');   // <-- from hPanel Databases
+    define('DB_USER', 'REPLACE_WITH_YOUR_DB_USER');   // <-- from hPanel Databases
+    define('DB_PASS', 'REPLACE_WITH_YOUR_DB_PASSWORD'); // <-- from hPanel Databases
+    define('DB_CHARSET', 'utf8mb4');
+}
 
 // ---- App ----
 define('APP_NAME', 'Tejas Mehar — Admin');

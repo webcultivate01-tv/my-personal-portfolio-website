@@ -1,0 +1,16 @@
+<?php
+/**
+ * Copy this file to config.local.php and fill in real values.
+ * config.local.php is gitignored — it never gets committed or pushed.
+ * On the live server, create config.local.php directly there (upload it
+ * outside of git) with the Hostinger hPanel -> Databases values.
+ */
+
+declare(strict_types=1);
+
+define('DB_HOST', 'localhost');
+define('DB_PORT', '3306');
+define('DB_NAME', 'REPLACE_WITH_YOUR_DB_NAME');
+define('DB_USER', 'REPLACE_WITH_YOUR_DB_USER');
+define('DB_PASS', 'REPLACE_WITH_YOUR_DB_PASSWORD');
+define('DB_CHARSET', 'utf8mb4');
