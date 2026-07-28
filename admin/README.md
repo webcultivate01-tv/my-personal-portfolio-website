@@ -1,0 +1,294 @@
+# Admin Panel — Setup Guide
+
+A hand-rolled **MVC PHP** admin panel for managing your freelance leads.
+It ships with secure **admin login (auth)**, a dashboard, role-based **Admin
+Management**, the **Enquiry Management** module (contact-form messages, with
+Important / Client flags), the admin-only **Client Management** module
+(clients, meetings, invoices and payments), and the **Project Management**
+module (projects, tasks, assignment and per-task comments) shared by admins
+and managers.
+
+## Architecture (MVC)
+
+```
+admin/
+├── index.php              # Front controller — every request enters here
+├── .htaccess              # Routes requests to index.php + blocks app/ config/ database/
+├── config/config.php      # DB credentials, base path, session settings, helpers
+├── app/
+│   ├── Core/              # The framework: Router, Controller, Model, View, Auth, Database
+│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project
+│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote
+│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, errors)
+├── assets/css/admin.css   # Indigo/slate professional theme
+└── database/
+    ├── schema.sql                          # Fresh install: creates every table (roles + enquiries + onboarding + clients + projects)
+    ├── migration_roles.sql                 # Existing install: adds the role column
+    ├── migration_enquiries.sql             # Existing install: adds is_important / is_client flags
+    ├── migration_onboarding.sql            # Existing install: adds hire-record + document columns
+    ├── migration_enquiry_unread_notes.sql  # Existing install: adds is_read + the lead_notes timeline table
+    ├── migration_clients.sql               # Existing install: adds the Client Management tables
+    ├── migration_client_services_cost.sql  # Only if you ran migration_clients.sql before it had services/project_cost
+    ├── migration_projects.sql              # Existing install: adds the Project Management tables
+    └── create_admin.php                    # One-time: creates your first login, then DELETE it
+```
+
+**Request flow:** browser → `.htaccess` → `index.php` → `Router` → `Controller` → `Model` (DB) → `View` → HTML.
+
+## Deploy to cPanel (one time)
+
+1. **Upload** the whole `admin/` folder into `public_html/` so it lives at
+   `public_html/admin/`.
+2. **Create the database**: cPanel → *MySQL Databases* → create a database and a
+   user, add the user to the database with **All Privileges**. Note the names
+   (cPanel prefixes them, e.g. `cpuser_admin`).
+3. **Edit** `config/config.php` → set `DB_NAME`, `DB_USER`, `DB_PASS`.
+   Also set `SECURE_COOKIES` to `true` (you have HTTPS) and `DEBUG` to `false`.
+4. **Import the schema**: cPanel → *phpMyAdmin* → select your DB → *Import* →
+   choose `database/schema.sql` → Go.
+5. **Create your login**: edit the name/email/password at the top of
+   `database/create_admin.php`, visit
+   `https://yoursite.com/admin/database/create_admin.php` once, then **delete that file**.
+6. Go to `https://yoursite.com/admin/` and sign in. 🎉
+
+## Run locally first (recommended)
+
+Install **XAMPP** (or Laragon). Put the `admin` folder in `htdocs`, start
+Apache + MySQL, create a DB in phpMyAdmin, import `schema.sql`, run
+`create_admin.php`, then open `http://localhost/admin/`.
+(Keep `BASE_PATH = '/admin'` to match the URL.)
+
+## Roles & Admin Management
+
+Two roles control who can do what:
+
+| Capability                        | Admin | Manager |
+|-----------------------------------|:-----:|:-------:|
+| Sign in, view dashboard           |  ✅   |   ✅    |
+| **Admin Management** (add/remove users, reset passwords) | ✅ | ❌ |
+| **Client Management** (clients, meetings, invoices, payments) | ✅ | ❌ |
+| **Project Management** — view projects, update status/comment on own tasks | ✅ | ✅ |
+| **Project Management** — create/edit/delete projects and tasks, assign work | ✅ | ❌ |
+| Add another admin **or** manager  |  ✅   |   ❌    |
+| Change their **own** password     |  ✅   |   ❌    |
+| Have their password reset by an admin | ✅ | ✅ |
+
+- The **Admin Management** page (`/admin/users`) is only visible/reachable to admins.
+  From there an admin adds team members (choosing admin or manager), resets any
+  user's password, or deletes an account.
+- A **manager cannot change their own password** — the form on *My Account* is
+  replaced with a note telling them to ask an admin. Only an admin can reset it.
+- Safety rails: you can't delete your own account, and you can't remove the last
+  remaining admin (so the panel can never be left with no one who can manage it).
+
+**Upgrading an existing install:** import `database/migration_roles.sql` once in
+phpMyAdmin. It adds the `role` column and promotes your original login to admin so
+you keep full access. Fresh installs get roles automatically from `schema.sql`.
+
+## Employee onboarding
+
+Adding a team member is treated like a company hiring an employee — the admin's
+**Add a team member** form on `/admin/users` collects a full hire record up
+front (mobile number, alternate mobile, address, Aadhar number, PAN number,
+designation, date of joining, date of birth, emergency contact), not just a
+name and email.
+
+Fields are split three ways (`App\Models\User`):
+
+| Fields | Who can edit |
+|---|---|
+| Email, mobile, alternate mobile, address, Aadhar #, PAN # | Locked once set — only an admin can change them afterwards |
+| Name, role, designation, date of joining | Admin-controlled — view-only for the member |
+| Date of birth, emergency contact | The member can edit these on **My Account** any time |
+| Profile photo, Aadhar front/back, PAN card | Uploaded once by the member, then locked |
+
+A new manager is **blocked from every page** (redirected to `/account/onboarding`)
+until they upload their profile photo and both ID documents on first sign-in —
+enforced in `Controller::requireAuth()`. Admins are exempt from this gate.
+Uploaded files are never web-accessible directly: they live in `storage/uploads/`
+(denied by `.htaccess`) and are only streamed through the authenticated
+`/account/document` route to the owner or an admin.
+
+**Upgrading an existing install:** import `database/migration_onboarding.sql`
+once in phpMyAdmin — it adds the hire-record and document columns. Fresh
+installs get them automatically from `schema.sql`. Existing members (created
+before this feature) will have empty hire-record fields; an admin should fill
+those in from **Admin Management → Edit**, and existing managers will be asked
+to upload their documents next time they sign in.
+
+## Security built in
+
+- Passwords stored with `password_hash()` (bcrypt), verified with `password_verify()`.
+- All DB access uses **PDO prepared statements** (no SQL injection).
+- **CSRF tokens** on login and logout forms.
+- Session ID regenerated on login (anti session-fixation); HttpOnly + SameSite cookies.
+- `app/`, `config/`, `database/` blocked from direct web access by `.htaccess`.
+- Login errors don't reveal whether the email or the password was wrong.
+
+## Enquiry Management
+
+Contact-form messages from your website land in **Admin → Enquiries** (`/admin/enquiries`).
+
+| Capability                                  | Admin | Manager |
+|---------------------------------------------|:-----:|:-------:|
+| View enquiries, open full message + notes   |  ✅   |   ✅    |
+| Mark **Important** (★) / change status       |  ✅   |   ✅    |
+| Mark as **Client** (row turns green)         |  ✅   |   ✅    |
+| Add internal notes                           |  ✅   |   ✅    |
+| **Delete** an enquiry                        |  ✅   |   ❌    |
+
+- **Important** floats an enquiry to the top of the list and highlights it.
+- **Client** flags a genuine client enquiry — the row and detail view turn green
+  and a "Client" tag appears (also shown on the dashboard).
+- Filter tabs at the top narrow the list to Important, Clients, or any status
+  (New / Contacted / Quoted / Won / Lost).
+
+**Unread indicator (red dot):** every new enquiry is created unread
+(`leads.is_read = 0`). While any enquiry is unread, a red dot shows next to
+**Enquiries** in the sidebar (visible from every page) and next to the
+enquiry's name in the list/dashboard. Opening an enquiry
+(`EnquiryController::show`) marks it read and the dot clears — this is
+independent of the **status** pipeline (New/Contacted/…), so moving an
+enquiry's status doesn't affect whether it still shows as unread.
+
+**Notes timeline:** "Internal notes" on an enquiry is a running timeline
+(`lead_notes` table via `App\Models\LeadNote`), not a single field that gets
+overwritten. Every submission adds a new, timestamped entry stamped with the
+team member who wrote it, so the whole history of who said what is kept.
+
+**How messages get captured:** the site's contact form (`contact.html`) now
+POSTs to `contact.php` at the site root, which validates the input (plus a spam
+honeypot) and saves it via `Lead::create(...)`. If PHP isn't reachable (e.g. the
+page is previewed as a static file), the form gracefully falls back to opening
+the visitor's mail client. `contact.php` reuses this panel's `config/config.php`,
+so it must sit one level **above** the `admin/` folder (i.e. in `public_html/`).
+
+**Upgrading an existing install:** import `database/migration_enquiries.sql` once
+in phpMyAdmin — it adds the `is_important` and `is_client` columns. Then import
+`database/migration_enquiry_unread_notes.sql` once — it adds the `is_read`
+column and the `lead_notes` table, and copies any existing text from the old
+`leads.notes` field in as each enquiry's first note. Fresh installs get all of
+this automatically from `schema.sql`.
+
+## Client Management (admin only)
+
+**Admin → Client Management** (`/admin/clients`) is where an actual client — not
+just an enquiry — is managed end to end: their details, every meeting held with
+them, every invoice raised, and every payment received.
+
+> **Managers cannot use this module at all.** The sidebar link is only rendered
+> for admins, and *every* action in `App\Controllers\ClientController` starts
+> with `requireAdmin()` — so a manager who types a `/admin/clients…` URL directly
+> (or POSTs to one) is bounced to the dashboard with a permission error. Hiding
+> the link is cosmetic; the controller check is what actually enforces it.
+
+**Adding a client** captures what the job actually is, not just who they are:
+alongside name, company, email, phone and address, the form takes the
+**services they took** (e.g. "Website design, SEO, Hosting") and the
+**total project cost** — the whole agreed value of the work. The
+**+ Add new client** button opens that form right on the list page.
+
+**The client list** shows one row per client with their services, how many
+meetings you've had, and their money position — project cost, total invoiced,
+total received, and what's still outstanding (highlighted in red when they owe
+you). The stat tiles across the top total the same figures for every client at
+once.
+
+**One client's page** (`/admin/clients/view?id=…`) opens as a **read-only record**
+— it shows only what has actually been logged. Each section's panel head carries
+its own button (**Edit details**, **+ Log meeting**, **+ Create invoice**,
+**+ Record payment**) that slides that section's form open, so the page stays a
+clean summary until you're actually adding something.
+
+| Section | What it tracks |
+|---|---|
+| **Client details** | Company, email, phone, address, services taken, total project cost, still-to-invoice, and free-form notes |
+| **Meetings** | Every meeting with its **date and time**, how long it ran (minutes), what was discussed, and which team member logged it |
+| **Invoices** | Invoice number, amount, issue date, due date, what it's for, and a status of Unpaid / Paid / Overdue / Cancelled |
+| **Payments** | Amount, date received, method (cash, bank transfer, UPI, card, cheque, other), and an optional link to the invoice it settles |
+
+- **Meeting count** is simply how many meetings are logged, so "how many times
+  have we met this client" is answered on both the client's page and the list.
+- **Outstanding** is total invoiced minus total received — what they owe on bills
+  already raised. Cancelled invoices are excluded from the invoiced total, so
+  cancelling one clears it from what's owed.
+- **Still to invoice** is total project cost minus total invoiced — how much of
+  the agreed job you haven't billed yet. It's shown on the client's details and
+  repeated as a hint on the invoice form. Leave the project cost blank and it
+  simply reads "—".
+- A payment can only be linked to an invoice **belonging to that same client** —
+  the controller re-checks ownership and drops the link if it doesn't match.
+- **Deleting a client removes everything about them** (meetings, invoices and
+  payments cascade via foreign keys), so the confirm dialog spells that out.
+
+Data lives in four tables — `clients`, `client_meetings`, `client_invoices` and
+`client_payments` — backed by `App\Models\Client`, `ClientMeeting`,
+`ClientInvoice` and `ClientPayment`.
+
+**Upgrading an existing install:** import `database/migration_clients.sql` once
+in phpMyAdmin — it creates the four tables. Fresh installs get them
+automatically from `schema.sql`. If you imported `migration_clients.sql` back
+when it had no `services` / `project_cost` columns, import
+`database/migration_client_services_cost.sql` once to add them (skip it
+otherwise — it would error with "duplicate column").
+
+## Project Management (admin + manager)
+
+**Project Management** (`/admin/projects`) is where you and your developer(s)
+track actual work — projects broken into tasks, each assigned to one person,
+moved through a status pipeline, and discussed inline. Unlike Client
+Management, both roles use this module, so it's visible in the sidebar for
+everyone and every page is reachable by a manager.
+
+> **Who can do what is enforced per action, not per page.** Viewing the
+> project list and a project's task board is open to any signed-in user.
+> Creating, editing or deleting a project or a task is admin-only
+> (`requireAdmin()` in `App\Controllers\ProjectController`). Moving a task's
+> status and adding a comment on it is allowed for an admin **or** whoever
+> that task is assigned to — checked with `canActOnTask()`, which compares
+> `project_tasks.assigned_to` against the signed-in user. A manager who isn't
+> assigned to a task sees its status dropdown disabled and has no comment box.
+
+**Creating a project** takes a name, an optional linked client (from Client
+Management), status (Planning / In Progress / On Hold / Completed /
+Cancelled), priority (Low / Medium / High), start/due dates, an optional
+budget, and a description. The **+ New project** button on the list page
+opens this form; it's only shown to admins.
+
+**The project list** shows every project with its client, status, priority, a
+task-progress bar (`done / total` tasks), and due date. Filter tabs narrow it
+to one status at a time. Signed-in users also see a **My tasks** panel above
+the list — every open (not-done) task assigned to them, across all projects,
+with a one-click status dropdown and a link back to the parent project.
+
+**One project's page** (`/admin/projects/view?id=…`) shows its details (with
+an admin-only **Edit details** toggle, same pattern as Client Management) and
+its full task list as a set of cards. Each task card shows its priority,
+title, assignee, due date (flagged **overdue** in red once past due and not
+done), description, and a collapsible **comments** thread — a running
+timeline (`project_task_notes`, mirrors the enquiry notes pattern) rather than
+a single field that gets overwritten, so the admin and the assigned developer
+can go back and forth on one task without losing history.
+
+| Section | What it tracks |
+|---|---|
+| **Project details** | Linked client, status, priority, start/due dates, budget, description |
+| **Tasks** | Title, description, assignee, priority, status (To do / In progress / Review / Done), due date |
+| **Comments** | A per-task timeline of notes, each stamped with author + time |
+
+- **Task progress** on the list page is `done tasks / total tasks` per
+  project — a plain count, so it stays accurate as tasks are added or
+  completed.
+- **Assigning a task** is done from the admin-only add/edit task form, picking
+  from every user (admin or manager) in Admin Management.
+- **Deleting a project removes all its tasks and their comments** (cascading
+  foreign keys), so the confirm dialog spells that out, same as deleting a
+  client.
+
+Data lives in three tables — `projects`, `project_tasks` and
+`project_task_notes` — backed by `App\Models\Project`, `ProjectTask` and
+`ProjectTaskNote`.
+
+**Upgrading an existing install:** import `database/migration_projects.sql`
+once in phpMyAdmin — it creates the three tables. Fresh installs get them
+automatically from `schema.sql`.

@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About Tejas Mehar â€” Enterprise Application Developer specializing in Oracle APEX and AI." />
+  <title>Tejas Mehar â€” About</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { brand: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'} },
+      fontFamily: { sans: ['Poppins','ui-sans-serif','system-ui','sans-serif'] },
+      keyframes: { floaty: { '0%,100%':{transform:'translateY(0px)'}, '50%':{transform:'translateY(-14px)'} } },
+      animation: { floaty: 'floaty 5s ease-in-out infinite' },
+    }}};
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-white text-slate-700 font-sans antialiased">
+
+  <!-- ============================= NAVBAR ============================= -->
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex items-center text-xl font-extrabold text-slate-900">
+          <span>Tejas Mehar</span>
+        </a>
+        <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <li><a href="index.html"     class="nav-link">Home</a></li>
+          <li><a href="about.html"     class="nav-link">About</a></li>
+          <li><a href="services.html"  class="nav-link">Services</a></li>
+          <li><a href="education.html" class="nav-link">Education</a></li>
+          <li><a href="skills.html"    class="nav-link">Skills</a></li>
+          <li><a href="projects.html"  class="nav-link">Projects</a></li>
+          <li><a href="contact.html"   class="nav-link">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="hidden md:inline-flex items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm shadow-brand-600/30">Hire Me</a>
+        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg id="menu-open"  class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Backdrop overlay -->
+    <div id="mobile-overlay" class="md:hidden fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Mobile sidebar (slides in from the right) -->
+    <aside id="mobile-menu" class="md:hidden fixed top-0 right-0 z-50 flex h-full w-72 max-w-[80%] translate-x-full flex-col bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl shadow-slate-900/10 transition-transform duration-300 ease-out">
+      <div class="flex items-center justify-between h-16 px-5 border-b border-slate-100">
+        <span class="text-lg font-extrabold text-slate-900">Menu</span>
+        <button id="menu-close-btn" aria-label="Close menu" class="grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="px-5 py-4 space-y-1 text-sm font-medium overflow-y-auto">
+        <li><a href="index.html"     class="mobile-link">Home</a></li>
+        <li><a href="about.html"     class="mobile-link">About</a></li>
+        <li><a href="services.html"  class="mobile-link">Services</a></li>
+        <li><a href="education.html" class="mobile-link">Education</a></li>
+        <li><a href="skills.html"    class="mobile-link">Skills</a></li>
+        <li><a href="projects.html"  class="mobile-link">Projects</a></li>
+        <li><a href="contact.html"   class="mobile-link">Contact</a></li>
+        <li class="pt-3"><a href="contact.html" class="block text-center rounded-full bg-brand-600 text-white font-semibold px-5 py-2.5">Booking 1:1 Session</a></li>
+      </ul>
+    </aside>
+
+  <!-- ============================= ABOUT ============================= -->
+  <section id="about" class="pt-28 md:pt-36 pb-20 md:pb-28 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">Get to know me</p>
+        <h2 class="section-title">About Me</h2>
+      </div>
+
+      <div class="mt-14 grid lg:grid-cols-5 gap-10 lg:gap-14 items-center">
+        <div class="lg:col-span-2 flex justify-center" data-reveal>
+          <div class="relative">
+            <div class="absolute -inset-3 rounded-3xl bg-brand-600/10 rotate-6"></div>
+            <img src="public/tejas.jpeg" alt="Tejas Mehar" class="relative w-72 h-80 object-cover object-top rounded-3xl shadow-xl ring-1 ring-slate-200" />
+          </div>
+        </div>
+
+        <div class="lg:col-span-3" data-reveal>
+          <h3 class="text-2xl md:text-3xl font-bold text-slate-900">Enterprise Application Developer &amp; AI Enthusiast</h3>
+          <p class="mt-4 text-slate-600 leading-relaxed">
+            I'm Tejas Mehar, an Enterprise Application Developer specializing in Oracle APEX with a
+            strong focus on building scalable, reliable, and user-friendly software. I enjoy turning
+            complex business requirements into clean, efficient solutions across web and mobile platforms.
+          </p>
+          <p class="mt-4 text-slate-600 leading-relaxed">
+            Alongside enterprise development, I work with modern technologies like React, Next.js, Flutter,
+            and Android, and I'm passionate about applying AI to solve real-world problems. I believe great
+            software is simple, clear, and genuinely useful.
+          </p>
+
+          <dl class="mt-6 grid sm:grid-cols-2 gap-4 text-sm">
+            <div class="flex gap-2"><dt class="font-semibold text-slate-900 w-24">Name:</dt><dd>Tejas Mehar</dd></div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-900 w-24">Email:</dt><dd class="truncate">tejasmehar7@gmail.com</dd></div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-900 w-24">Role:</dt><dd>App Developer</dd></div>
+            <div class="flex gap-2"><dt class="font-semibold text-slate-900 w-24">Focus:</dt><dd>Oracle APEX &amp; AI</dd></div>
+          </dl>
+
+          <div class="mt-8 grid grid-cols-3 gap-4">
+            <div class="rounded-2xl bg-white ring-1 ring-slate-100 p-4 text-center shadow-sm">
+              <p class="text-2xl font-extrabold text-brand-600">20+</p>
+              <p class="text-xs text-slate-500 mt-1">Projects</p>
+            </div>
+            <div class="rounded-2xl bg-white ring-1 ring-slate-100 p-4 text-center shadow-sm">
+              <p class="text-2xl font-extrabold text-brand-600">3+</p>
+              <p class="text-xs text-slate-500 mt-1">Years Exp.</p>
+            </div>
+            <div class="rounded-2xl bg-white ring-1 ring-slate-100 p-4 text-center shadow-sm">
+              <p class="text-2xl font-extrabold text-brand-600">15+</p>
+              <p class="text-xs text-slate-500 mt-1">Happy Clients</p>
+            </div>
+          </div>
+
+          <a href="contact.html" class="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 transition-colors shadow-lg shadow-brand-600/25">Let's Talk</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= MY STORY ============================= -->
+  <section id="story" class="py-20 md:py-28 bg-white">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">My story</p>
+        <h2 class="section-title">From curious tinkerer to enterprise developer</h2>
+      </div>
+
+      <div class="mt-12 grid md:grid-cols-3 gap-8 items-start">
+        <div class="md:col-span-2 space-y-5 text-slate-600 leading-relaxed" data-reveal>
+          <p>
+            My journey into software didn't start with a job title â€” it started with curiosity. I loved
+            pulling things apart to understand how they worked, and that same instinct is what pushes me
+            today when I sit down with a messy, real-world business problem.
+          </p>
+          <p>
+            Over the past few years I've grown into an <span class="font-semibold text-slate-900">Enterprise
+            Application Developer</span>, specialising in <span class="font-semibold text-slate-900">Oracle
+            APEX</span> while building modern products with React, Next.js, Flutter and Android. Along the way
+            I've shipped ERP modules, dashboards, mobile apps and AI-powered tools for clients across several
+            countries.
+          </p>
+          <p>
+            What keeps me going isn't the code itself â€” it's the moment a client sees their idea working,
+            saving them hours every week or unlocking something they couldn't do before. That's the outcome
+            I optimise for on every project.
+          </p>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 ring-1 ring-slate-100 p-6 shadow-sm" data-reveal>
+          <p class="text-sm font-semibold text-slate-900">A few quick highlights</p>
+          <ul class="mt-4 space-y-3">
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Oracle APEX specialist with full-stack range</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Delivered across web, mobile &amp; AI</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Clear communication, no jargon</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>Focused on outcomes, not just features</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= VALUES ============================= -->
+  <section id="values" class="py-20 md:py-28 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">What drives me</p>
+        <h2 class="section-title">Principles I build with</h2>
+        <p class="mt-4 text-slate-600">The values behind every project I take on â€” so you know exactly what to expect working with me.</p>
+      </div>
+
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="cat-card" data-reveal>
+          <div class="grid place-items-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="font-bold text-slate-900">Clarity first</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">I turn vague ideas into a clear plan before writing a line of code, so we both know where we're headed.</p>
+        </div>
+        <div class="cat-card" data-reveal>
+          <div class="grid place-items-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3 class="font-bold text-slate-900">Ownership</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">I treat your product like it's my own â€” spotting problems early and fixing them before they reach you.</p>
+        </div>
+        <div class="cat-card" data-reveal>
+          <div class="grid place-items-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
+          </div>
+          <h3 class="font-bold text-slate-900">Honest &amp; transparent</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Realistic timelines, straight answers and no surprise costs. If something won't work, I'll tell you.</p>
+        </div>
+        <div class="cat-card" data-reveal>
+          <div class="grid place-items-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 mb-4">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          </div>
+          <h3 class="font-bold text-slate-900">Always learning</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">From Oracle APEX to applied AI, I keep sharpening my toolkit so you get modern, future-proof solutions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= HOW I CAN HELP ============================= -->
+  <section id="help" class="py-20 md:py-28 bg-white">
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">Is this you?</p>
+        <h2 class="section-title">How I can help you</h2>
+        <p class="mt-4 text-slate-600">If any of these sound familiar, we'll probably work well together.</p>
+      </div>
+
+      <div class="mt-14 grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div data-reveal>
+          <h3 class="text-lg font-bold text-slate-900">You're the right fit ifâ€¦</h3>
+          <ul class="mt-5 space-y-4">
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>You have a business idea or manual process that needs to become real software.</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>You need an Oracle APEX app, internal tool or dashboard built or improved.</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>You want a web or mobile app that's fast, clean and easy to use.</span></li>
+            <li class="mentor-point"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span>You're curious how AI could automate the boring, repetitive parts of your work.</span></li>
+          </ul>
+        </div>
+
+        <div class="rounded-3xl bg-gradient-to-br from-brand-600 to-brand-800 text-white p-8 shadow-xl shadow-brand-600/20" data-reveal>
+          <h3 class="text-lg font-bold">What you walk away with</h3>
+          <ul class="mt-5 space-y-4 text-brand-50 text-sm leading-relaxed">
+            <li class="flex gap-3"><span class="mt-0.5 grid place-items-center w-5 h-5 rounded-full bg-white/20 shrink-0">âœ“</span><span>Software that actually gets used â€” built around real people, not just specs.</span></li>
+            <li class="flex gap-3"><span class="mt-0.5 grid place-items-center w-5 h-5 rounded-full bg-white/20 shrink-0">âœ“</span><span>Hours saved every week through cleaner workflows and automation.</span></li>
+            <li class="flex gap-3"><span class="mt-0.5 grid place-items-center w-5 h-5 rounded-full bg-white/20 shrink-0">âœ“</span><span>A reliable partner who communicates clearly and delivers on time.</span></li>
+            <li class="flex gap-3"><span class="mt-0.5 grid place-items-center w-5 h-5 rounded-full bg-white/20 shrink-0">âœ“</span><span>Support after launch â€” I don't disappear once the app ships.</span></li>
+          </ul>
+          <a href="contact.html" class="mt-7 inline-flex items-center gap-2 rounded-full bg-white text-brand-700 font-semibold px-6 py-3 hover:bg-brand-50 transition-colors">Tell me about your project â†’</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= TESTIMONIALS =============================
+       NOTE: Replace the placeholder quotes/names below with REAL client feedback
+       before publishing. Do not present these sample quotes as genuine reviews. -->
+  <section id="testimonials" class="py-20 md:py-28 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">Kind words</p>
+        <h2 class="section-title">What clients say about working with me</h2>
+      </div>
+
+      <div class="mt-14 grid md:grid-cols-3 gap-6">
+        <figure class="rounded-2xl bg-white ring-1 ring-slate-100 p-6 shadow-sm" data-reveal>
+          <div class="flex gap-1 text-amber-400">â˜…â˜…â˜…â˜…â˜…</div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed text-sm">"Tejas understood exactly what we needed and delivered an APEX app that our whole team now relies on. Communication was clear the entire way."</blockquote>
+          <figcaption class="mt-5 flex items-center gap-3">
+            <div class="grid place-items-center w-10 h-10 rounded-full bg-brand-100 text-brand-700 font-bold">C</div>
+            <div><p class="text-sm font-semibold text-slate-900">[Client Name]</p><p class="text-xs text-slate-500">Operations Lead</p></div>
+          </figcaption>
+        </figure>
+        <figure class="rounded-2xl bg-white ring-1 ring-slate-100 p-6 shadow-sm" data-reveal>
+          <div class="flex gap-1 text-amber-400">â˜…â˜…â˜…â˜…â˜…</div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed text-sm">"Fast, reliable and genuinely easy to work with. He turned a rough idea into a polished mobile app faster than we expected."</blockquote>
+          <figcaption class="mt-5 flex items-center gap-3">
+            <div class="grid place-items-center w-10 h-10 rounded-full bg-brand-100 text-brand-700 font-bold">F</div>
+            <div><p class="text-sm font-semibold text-slate-900">[Client Name]</p><p class="text-xs text-slate-500">Startup Founder</p></div>
+          </figcaption>
+        </figure>
+        <figure class="rounded-2xl bg-white ring-1 ring-slate-100 p-6 shadow-sm" data-reveal>
+          <div class="flex gap-1 text-amber-400">â˜…â˜…â˜…â˜…â˜…</div>
+          <blockquote class="mt-4 text-slate-600 leading-relaxed text-sm">"The AI automation he built saves us hours every single week. Highly recommend him for anything technical."</blockquote>
+          <figcaption class="mt-5 flex items-center gap-3">
+            <div class="grid place-items-center w-10 h-10 rounded-full bg-brand-100 text-brand-700 font-bold">P</div>
+            <div><p class="text-sm font-semibold text-slate-900">[Client Name]</p><p class="text-xs text-slate-500">Product Manager</p></div>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= CLOSING CTA ============================= -->
+  <section id="about-cta" class="py-20 md:py-28 bg-white">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8">
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 to-brand-900 px-8 py-14 md:px-14 md:py-16 text-center shadow-xl shadow-brand-700/20" data-reveal>
+        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10"></div>
+        <div class="absolute -bottom-12 -left-8 w-48 h-48 rounded-full bg-white/5"></div>
+        <div class="relative">
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white">Have an idea? Let's make it real.</h2>
+          <p class="mt-4 text-brand-100 max-w-xl mx-auto">Whether it's a full product or a quick automation, I'd love to hear what you're building. No pressure â€” just an honest conversation about how I can help.</p>
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="contact.html" class="inline-flex items-center justify-center rounded-full bg-white text-brand-700 font-semibold px-7 py-3 hover:bg-brand-50 transition-colors shadow-sm">Book a free chat</a>
+            <a href="services.html" class="inline-flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-3 border border-white/35 transition-colors">See what I do</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= FOOTER ============================= -->
+  <footer class="border-t border-slate-100 bg-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-500">&copy; <span id="year"></span> Tejas Mehar</p>
+      <div class="flex items-center gap-2.5">
+        <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+        <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 grid place-items-center w-12 h-12 rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 opacity-0 pointer-events-none transition-all hover:bg-brand-700">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

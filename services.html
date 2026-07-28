@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Services offered by Tejas Mehar: enterprise apps, web, mobile, AI and more." />
+  <title>Tejas Mehar â€” Services</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { brand: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'} },
+      fontFamily: { sans: ['Poppins','ui-sans-serif','system-ui','sans-serif'] },
+      keyframes: { floaty: { '0%,100%':{transform:'translateY(0px)'}, '50%':{transform:'translateY(-14px)'} } },
+      animation: { floaty: 'floaty 5s ease-in-out infinite' },
+    }}};
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-white text-slate-700 font-sans antialiased">
+
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex items-center text-xl font-extrabold text-slate-900">
+          <span>Tejas Mehar</span>
+        </a>
+        <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <li><a href="index.html"     class="nav-link">Home</a></li>
+          <li><a href="about.html"     class="nav-link">About</a></li>
+          <li><a href="services.html"  class="nav-link">Services</a></li>
+          <li><a href="education.html" class="nav-link">Education</a></li>
+          <li><a href="skills.html"    class="nav-link">Skills</a></li>
+          <li><a href="projects.html"  class="nav-link">Projects</a></li>
+          <li><a href="contact.html"   class="nav-link">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="hidden md:inline-flex items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm shadow-brand-600/30">Hire Me</a>
+        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg id="menu-open"  class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Backdrop overlay -->
+    <div id="mobile-overlay" class="md:hidden fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Mobile sidebar (slides in from the right) -->
+    <aside id="mobile-menu" class="md:hidden fixed top-0 right-0 z-50 flex h-full w-72 max-w-[80%] translate-x-full flex-col bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl shadow-slate-900/10 transition-transform duration-300 ease-out">
+      <div class="flex items-center justify-between h-16 px-5 border-b border-slate-100">
+        <span class="text-lg font-extrabold text-slate-900">Menu</span>
+        <button id="menu-close-btn" aria-label="Close menu" class="grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="px-5 py-4 space-y-1 text-sm font-medium overflow-y-auto">
+        <li><a href="index.html"     class="mobile-link">Home</a></li>
+        <li><a href="about.html"     class="mobile-link">About</a></li>
+        <li><a href="services.html"  class="mobile-link">Services</a></li>
+        <li><a href="education.html" class="mobile-link">Education</a></li>
+        <li><a href="skills.html"    class="mobile-link">Skills</a></li>
+        <li><a href="projects.html"  class="mobile-link">Projects</a></li>
+        <li><a href="contact.html"   class="mobile-link">Contact</a></li>
+        <li class="pt-3"><a href="contact.html" class="block text-center rounded-full bg-brand-600 text-white font-semibold px-5 py-2.5">Booking 1:1 Session</a></li>
+      </ul>
+    </aside>
+
+  <section id="services" class="pt-28 md:pt-36 pb-20 md:pb-28">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">What I do</p>
+        <h2 class="section-title">Services</h2>
+        <p class="mt-4 text-slate-600">Focused services to build, ship, and scale your ideas.</p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- Website Development -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=800&q=70" alt="Website development" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm0 4h18M8 21h8"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">Website Development</h3>
+            <p class="service-text">Fast, responsive, SEO-friendly websites and web apps built with React, Next.js, and modern front-end tooling.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- App Development -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=70" alt="Mobile app development" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2 15h2"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">App Development</h3>
+            <p class="service-text">Cross-platform and native mobile apps with Flutter and Android for smooth, delightful, high-performance experiences.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Custom Software Development -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?auto=format&fit=crop&w=800&q=70" alt="Custom software development" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l-4 3 4 3m8-6l4 3-4 3m-2-9l-4 12"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">Custom Software Development</h3>
+            <p class="service-text">Robust, scalable enterprise software built with Oracle APEX and modern stacks, tailored to your exact business workflows.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- AI Automation Services -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=70" alt="AI automation services" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a3 3 0 0 1 3 3v1a3 3 0 0 1 3 3 3 3 0 0 1 0 6 3 3 0 0 1-3 3v1a3 3 0 0 1-6 0v-1a3 3 0 0 1-3-3 3 3 0 0 1 0-6 3 3 0 0 1 3-3V5a3 3 0 0 1 3-3z"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">AI Automation Services</h3>
+            <p class="service-text">Practical AI features, agents, and automations that make products smarter and cut repetitive work out of your workflows.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Cloud & DevOps -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1667372393119-3d4c48d07fc9?auto=format&fit=crop&w=800&q=70" alt="Cloud and DevOps services" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 18a4 4 0 0 1-.5-7.97 5.5 5.5 0 0 1 10.72-1.53A4.5 4.5 0 0 1 17.5 18H7zm5-7v5m0 0l-2-2m2 2l2-2"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">Cloud &amp; DevOps</h3>
+            <p class="service-text">Cloud deployment, CI/CD pipelines, and infrastructure management on AWS and Azure to ship faster and scale reliably.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- Consulting & Mentorship -->
+        <article class="service-card" data-reveal>
+          <div class="service-media">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=70" alt="Consulting and mentorship" loading="lazy" />
+            <div class="service-icon"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-1a4 4 0 0 0-4-4h-1m-6 5H2v-1a4 4 0 0 1 4-4h1m8-4a3 3 0 1 1-6 0 3 3 0 0 1 6 0zm7-3a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM7 7a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/></svg></div>
+          </div>
+          <div class="service-body">
+            <h3 class="service-title">Consulting &amp; Mentorship</h3>
+            <p class="service-text">Technical guidance, code reviews, and 1:1 mentorship to level up your team and keep your product healthy.</p>
+            <div class="service-cta mt-auto">
+              <a href="contact.html" class="service-btn">Contact Me
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+              </a>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= HOW I WORK ============================= -->
+  <section id="process" class="py-16 md:py-24 bg-slate-50 border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">How I work</p>
+        <h2 class="section-title">A simple, transparent process</h2>
+        <p class="mt-4 text-slate-600">From first call to launch, you always know exactly what's happening and what comes next.</p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="relative rounded-2xl bg-white border border-slate-100 shadow-sm p-6" data-reveal>
+          <span class="text-4xl font-extrabold text-brand-100">01</span>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Discover</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">We talk through your goals, scope, and budget â€” a clear plan before any code is written.</p>
+        </div>
+        <div class="relative rounded-2xl bg-white border border-slate-100 shadow-sm p-6" data-reveal>
+          <span class="text-4xl font-extrabold text-brand-100">02</span>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Design &amp; Plan</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">I map the architecture, timeline, and milestones so you know the deliverables upfront.</p>
+        </div>
+        <div class="relative rounded-2xl bg-white border border-slate-100 shadow-sm p-6" data-reveal>
+          <span class="text-4xl font-extrabold text-brand-100">03</span>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Build &amp; Update</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">I develop in short cycles with regular progress updates â€” no surprises, no silence.</p>
+        </div>
+        <div class="relative rounded-2xl bg-white border border-slate-100 shadow-sm p-6" data-reveal>
+          <span class="text-4xl font-extrabold text-brand-100">04</span>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Launch &amp; Support</h3>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">We ship it, and I stay available for fixes, tweaks, and ongoing support after go-live.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= WHY TRUST ME ============================= -->
+  <section id="why-me" class="py-16 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div data-reveal>
+          <p class="section-eyebrow">Why work with me</p>
+          <h2 class="section-title">Reliable delivery you can count on</h2>
+          <p class="mt-4 text-slate-600">I treat every project like it's my own â€” clear communication, honest timelines, and code that's built to last.</p>
+          <ul class="mt-8 space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 grid place-items-center w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+              <p class="text-sm text-slate-600"><span class="font-semibold text-slate-900">Clear communication</span> â€” regular updates so you're never left guessing.</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 grid place-items-center w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+              <p class="text-sm text-slate-600"><span class="font-semibold text-slate-900">On-time delivery</span> â€” realistic deadlines that I actually meet.</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 grid place-items-center w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+              <p class="text-sm text-slate-600"><span class="font-semibold text-slate-900">Clean, scalable code</span> â€” maintainable work you can build on later.</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-0.5 grid place-items-center w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex-shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></span>
+              <p class="text-sm text-slate-600"><span class="font-semibold text-slate-900">Post-launch support</span> â€” I don't disappear after delivery.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="grid grid-cols-2 gap-5" data-reveal>
+          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6 text-center">
+            <p class="text-3xl md:text-4xl font-extrabold text-brand-600">15+</p>
+            <p class="mt-1 text-sm text-slate-600">Projects delivered</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6 text-center">
+            <p class="text-3xl md:text-4xl font-extrabold text-brand-600">3+</p>
+            <p class="mt-1 text-sm text-slate-600">Years of experience</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6 text-center">
+            <p class="text-3xl md:text-4xl font-extrabold text-brand-600">100%</p>
+            <p class="mt-1 text-sm text-slate-600">Client satisfaction</p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 border border-slate-100 p-6 text-center">
+            <p class="text-3xl md:text-4xl font-extrabold text-brand-600">24h</p>
+            <p class="mt-1 text-sm text-slate-600">Avg. reply time</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= FINAL CTA ============================= -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="max-w-5xl mx-auto px-5 sm:px-8" data-reveal>
+      <div class="session-cta-light px-6 py-8 sm:px-12 sm:py-10 text-center">
+        <div class="pointer-events-none absolute -top-20 -right-16 w-72 h-72 bg-brand-200/30 rounded-full blur-3xl"></div>
+        <div class="relative">
+          <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold px-4 py-1.5 border border-brand-100">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            Available for new projects
+          </span>
+          <h3 class="mt-5 text-2xl sm:text-3xl font-extrabold text-slate-900">Let's build something together</h3>
+          <p class="mt-3 text-slate-600 max-w-md mx-auto">Have an idea or a project in mind? Send me a message and I'll get back to you within 24 hours.</p>
+          <a href="contact.html" class="btn-solid mt-6">
+            Get in Touch
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+          </a>
+          <p class="mt-5 text-sm text-slate-500">Or email me at
+            <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" class="font-semibold text-brand-700 underline underline-offset-4 decoration-brand-300 hover:decoration-brand-600">tejasmehar7@gmail.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-100 bg-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-500">&copy; <span id="year"></span> Tejas Mehar</p>
+      <div class="flex items-center gap-2.5">
+        <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+        <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 grid place-items-center w-12 h-12 rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 opacity-0 pointer-events-none transition-all hover:bg-brand-700">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

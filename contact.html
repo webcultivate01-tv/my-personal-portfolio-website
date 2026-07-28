@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Get in touch with Tejas Mehar." />
+  <title>Tejas Mehar â€” Contact</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { brand: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'} },
+      fontFamily: { sans: ['Poppins','ui-sans-serif','system-ui','sans-serif'] },
+      keyframes: { floaty: { '0%,100%':{transform:'translateY(0px)'}, '50%':{transform:'translateY(-14px)'} } },
+      animation: { floaty: 'floaty 5s ease-in-out infinite' },
+    }}};
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-white text-slate-700 font-sans antialiased">
+
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex items-center text-xl font-extrabold text-slate-900">
+          <span>Tejas Mehar</span>
+        </a>
+        <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <li><a href="index.html"     class="nav-link">Home</a></li>
+          <li><a href="about.html"     class="nav-link">About</a></li>
+          <li><a href="services.html"  class="nav-link">Services</a></li>
+          <li><a href="education.html" class="nav-link">Education</a></li>
+          <li><a href="skills.html"    class="nav-link">Skills</a></li>
+          <li><a href="projects.html"  class="nav-link">Projects</a></li>
+          <li><a href="contact.html"   class="nav-link">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="hidden md:inline-flex items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm shadow-brand-600/30">Hire Me</a>
+        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg id="menu-open"  class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Backdrop overlay -->
+    <div id="mobile-overlay" class="md:hidden fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Mobile sidebar (slides in from the right) -->
+    <aside id="mobile-menu" class="md:hidden fixed top-0 right-0 z-50 flex h-full w-72 max-w-[80%] translate-x-full flex-col bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl shadow-slate-900/10 transition-transform duration-300 ease-out">
+      <div class="flex items-center justify-between h-16 px-5 border-b border-slate-100">
+        <span class="text-lg font-extrabold text-slate-900">Menu</span>
+        <button id="menu-close-btn" aria-label="Close menu" class="grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="px-5 py-4 space-y-1 text-sm font-medium overflow-y-auto">
+        <li><a href="index.html"     class="mobile-link">Home</a></li>
+        <li><a href="about.html"     class="mobile-link">About</a></li>
+        <li><a href="services.html"  class="mobile-link">Services</a></li>
+        <li><a href="education.html" class="mobile-link">Education</a></li>
+        <li><a href="skills.html"    class="mobile-link">Skills</a></li>
+        <li><a href="projects.html"  class="mobile-link">Projects</a></li>
+        <li><a href="contact.html"   class="mobile-link">Contact</a></li>
+        <li class="pt-3"><a href="contact.html" class="block text-center rounded-full bg-brand-600 text-white font-semibold px-5 py-2.5">Booking 1:1 Session</a></li>
+      </ul>
+    </aside>
+
+  <section id="contact" class="relative overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28">
+    <div class="pointer-events-none absolute -top-10 -right-24 w-96 h-96 bg-brand-100/50 rounded-full blur-3xl"></div>
+    <div class="pointer-events-none absolute top-1/2 -left-24 w-80 h-80 bg-brand-50 rounded-full blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-5 sm:px-8">
+      <!-- Heading -->
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <span class="inline-flex items-center gap-2 rounded-full bg-brand-50 text-brand-700 text-xs sm:text-sm font-semibold px-4 py-1.5 ring-1 ring-brand-100">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Available for new projects
+        </span>
+        <h2 class="mt-5 text-3xl md:text-4xl font-extrabold leading-tight text-slate-900">
+          Let's build something <span class="text-brand-600">great together</span>
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          Have a project in mind, want a 1:1 freelancing session, or just want to say hi?
+          Drop a message below â€” I usually reply within a day.
+        </p>
+      </div>
+
+      <!-- Two-column: info panel + form -->
+      <div class="mt-12 grid lg:grid-cols-5 gap-6 lg:gap-8 items-start">
+
+        <!-- LEFT: contact info -->
+        <div class="lg:col-span-2 space-y-4" data-reveal>
+          <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" class="contact-info group">
+            <span class="contact-info-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg>
+            </span>
+            <div class="min-w-0">
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Email me</p>
+              <p class="text-sm font-semibold text-slate-800 truncate group-hover:text-brand-600 transition-colors">tejasmehar7@gmail.com</p>
+            </div>
+          </a>
+
+          <div class="contact-info">
+            <span class="contact-info-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s-7-5.686-7-11a7 7 0 1 1 14 0c0 5.314-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Based in</p>
+              <p class="text-sm font-semibold text-slate-800">India â€” working with clients worldwide</p>
+            </div>
+          </div>
+
+          <div class="contact-info">
+            <span class="contact-info-icon">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            </span>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Response time</p>
+              <p class="text-sm font-semibold text-slate-800">Usually within 24 hours</p>
+            </div>
+          </div>
+
+          <!-- Socials -->
+          <div class="rounded-2xl bg-white ring-1 ring-slate-100 shadow-sm p-5">
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Find me online</p>
+            <div class="mt-3 flex items-center gap-2.5">
+              <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+              <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+              <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: form -->
+        <div class="lg:col-span-3" data-reveal>
+          <form id="contact-form" class="rounded-3xl bg-white ring-1 ring-slate-100 shadow-xl p-6 sm:p-8 space-y-5" novalidate>
+            <!-- Honeypot: hidden from humans, catches spam bots -->
+            <div class="hidden" aria-hidden="true">
+              <label>Company<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div><label for="name" class="form-label">Name</label><input id="name" name="name" type="text" required placeholder="Your name" class="form-input" /></div>
+              <div><label for="email" class="form-label">Email</label><input id="email" name="email" type="email" required placeholder="you@example.com" class="form-input" /></div>
+            </div>
+            <div><label for="subject" class="form-label">Subject</label><input id="subject" name="subject" type="text" placeholder="What's this about?" class="form-input" /></div>
+            <div><label for="message" class="form-label">Message</label><textarea id="message" name="message" rows="5" required placeholder="Tell me about your project..." class="form-input resize-none"></textarea></div>
+            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold px-8 py-3.5 transition-colors shadow-lg shadow-brand-600/25">
+              Send Message
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            </button>
+            <p class="text-center text-xs text-slate-400">Your details stay private and are only used to reply to you.</p>
+            <p id="form-status" class="text-sm font-medium hidden"></p>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-100 bg-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-500">&copy; <span id="year"></span> Tejas Mehar</p>
+      <div class="flex items-center gap-2.5">
+        <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+        <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 grid place-items-center w-12 h-12 rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 opacity-0 pointer-events-none transition-all hover:bg-brand-700">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

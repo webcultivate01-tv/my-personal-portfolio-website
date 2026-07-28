@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Selected projects built by Tejas Mehar." />
+  <title>Tejas Mehar â€” Projects</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: {
+      colors: { brand: {50:'#eef2ff',100:'#e0e7ff',200:'#c7d2fe',300:'#a5b4fc',400:'#818cf8',500:'#6366f1',600:'#4f46e5',700:'#4338ca',800:'#3730a3',900:'#312e81'} },
+      fontFamily: { sans: ['Poppins','ui-sans-serif','system-ui','sans-serif'] },
+      keyframes: { floaty: { '0%,100%':{transform:'translateY(0px)'}, '50%':{transform:'translateY(-14px)'} } },
+      animation: { floaty: 'floaty 5s ease-in-out infinite' },
+    }}};
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="bg-white text-slate-700 font-sans antialiased">
+
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+    <nav class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="index.html" class="flex items-center text-xl font-extrabold text-slate-900">
+          <span>Tejas Mehar</span>
+        </a>
+        <ul class="hidden md:flex items-center gap-1 text-sm font-medium">
+          <li><a href="index.html"     class="nav-link">Home</a></li>
+          <li><a href="about.html"     class="nav-link">About</a></li>
+          <li><a href="services.html"  class="nav-link">Services</a></li>
+          <li><a href="education.html" class="nav-link">Education</a></li>
+          <li><a href="skills.html"    class="nav-link">Skills</a></li>
+          <li><a href="projects.html"  class="nav-link">Projects</a></li>
+          <li><a href="contact.html"   class="nav-link">Contact</a></li>
+        </ul>
+        <a href="contact.html" class="hidden md:inline-flex items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm shadow-brand-600/30">Hire Me</a>
+        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg id="menu-open"  class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Backdrop overlay -->
+    <div id="mobile-overlay" class="md:hidden fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Mobile sidebar (slides in from the right) -->
+    <aside id="mobile-menu" class="md:hidden fixed top-0 right-0 z-50 flex h-full w-72 max-w-[80%] translate-x-full flex-col bg-white/95 backdrop-blur-xl border-l border-slate-100 shadow-2xl shadow-slate-900/10 transition-transform duration-300 ease-out">
+      <div class="flex items-center justify-between h-16 px-5 border-b border-slate-100">
+        <span class="text-lg font-extrabold text-slate-900">Menu</span>
+        <button id="menu-close-btn" aria-label="Close menu" class="grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <ul class="px-5 py-4 space-y-1 text-sm font-medium overflow-y-auto">
+        <li><a href="index.html"     class="mobile-link">Home</a></li>
+        <li><a href="about.html"     class="mobile-link">About</a></li>
+        <li><a href="services.html"  class="mobile-link">Services</a></li>
+        <li><a href="education.html" class="mobile-link">Education</a></li>
+        <li><a href="skills.html"    class="mobile-link">Skills</a></li>
+        <li><a href="projects.html"  class="mobile-link">Projects</a></li>
+        <li><a href="contact.html"   class="mobile-link">Contact</a></li>
+        <li class="pt-3"><a href="contact.html" class="block text-center rounded-full bg-brand-600 text-white font-semibold px-5 py-2.5">Booking 1:1 Session</a></li>
+      </ul>
+    </aside>
+
+  <section id="projects" class="pt-28 md:pt-36 pb-20 md:pb-28 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+      <div class="text-center max-w-2xl mx-auto" data-reveal>
+        <p class="section-eyebrow">Recent work</p>
+        <h2 class="section-title">Projects</h2>
+        <p class="mt-4 text-slate-600">A selection of things I've built. Replace these with your own.</p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/4f46e5/ffffff?text=Project+One" alt="Enterprise ERP Module" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">Oracle APEX</span><span class="project-tag">SQL</span></div>
+            <h3 class="text-lg font-bold text-slate-900">Enterprise ERP Module</h3>
+            <p class="mt-2 text-sm text-slate-600">A business management module handling inventory, reporting, and workflows.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/6366f1/ffffff?text=Project+Two" alt="SaaS Dashboard" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">React</span><span class="project-tag">Next.js</span></div>
+            <h3 class="text-lg font-bold text-slate-900">SaaS Dashboard</h3>
+            <p class="mt-2 text-sm text-slate-600">A responsive analytics dashboard with charts, auth, and real-time data.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/818cf8/ffffff?text=Project+Three" alt="Mobile Fitness App" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">Flutter</span><span class="project-tag">Android</span></div>
+            <h3 class="text-lg font-bold text-slate-900">Mobile Fitness App</h3>
+            <p class="mt-2 text-sm text-slate-600">A cross-platform fitness tracker with workouts, goals, and progress stats.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/4338ca/ffffff?text=Project+Four" alt="AI Chat Assistant" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">AI</span><span class="project-tag">Python</span></div>
+            <h3 class="text-lg font-bold text-slate-900">AI Chat Assistant</h3>
+            <p class="mt-2 text-sm text-slate-600">An intelligent assistant that answers questions and automates simple tasks.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/3730a3/ffffff?text=Project+Five" alt="E-Commerce Store" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">Next.js</span><span class="project-tag">Tailwind</span></div>
+            <h3 class="text-lg font-bold text-slate-900">E-Commerce Store</h3>
+            <p class="mt-2 text-sm text-slate-600">A modern online store with cart, checkout, and admin management.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/312e81/ffffff?text=Project+Six" alt="HR Management System" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">Oracle APEX</span><span class="project-tag">PL/SQL</span></div>
+            <h3 class="text-lg font-bold text-slate-900">HR Management System</h3>
+            <p class="mt-2 text-sm text-slate-600">Employee records, attendance, and payroll in one enterprise portal.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+        <article class="project-card" data-reveal>
+          <div class="project-thumb"><img src="https://placehold.co/600x400/4f46e5/ffffff?text=Project+Seven" alt="AI Resume Analyzer" class="w-full h-full object-cover" /></div>
+          <div class="p-5">
+            <div class="flex gap-2 mb-3 flex-wrap"><span class="project-tag">AI</span><span class="project-tag">Next.js</span></div>
+            <h3 class="text-lg font-bold text-slate-900">AI Resume Analyzer</h3>
+            <p class="mt-2 text-sm text-slate-600">Scores resumes against a job description and suggests targeted improvements with AI.</p>
+            <div class="mt-4 flex gap-4 text-sm font-semibold">
+              <a href="#" class="text-brand-600 hover:text-brand-700 inline-flex items-center gap-1">Live Demo <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5m0-5L10 14M5 5v14h14"/></svg></a>
+              <a href="#" class="text-slate-500 hover:text-slate-800">Code</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-slate-100 bg-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-slate-500">&copy; <span id="year"></span> Tejas Mehar</p>
+      <div class="flex items-center gap-2.5">
+        <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+        <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=tejasmehar7@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <button id="to-top" aria-label="Back to top" class="fixed bottom-6 right-6 z-40 grid place-items-center w-12 h-12 rounded-full bg-brand-600 text-white shadow-lg shadow-brand-600/30 opacity-0 pointer-events-none transition-all hover:bg-brand-700">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+  </button>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

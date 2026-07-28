@@ -1,0 +1,20 @@
+# --- Admin panel front-controller routing ---
+# All requests that are not real files/folders go to index.php
+RewriteEngine On
+
+# If the request maps to a real file or directory, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise, hand everything to the front controller
+RewriteRule ^ index.php [L]
+
+# --- Security: block direct access to app code & config ---
+RedirectMatch 403 ^/admin/app/.*$
+RedirectMatch 403 ^/admin/config/.*$
+# Block the SQL dump, but allow create_admin.php to be run once from the browser.
+RedirectMatch 403 ^/admin/database/.*\.sql$
+
+# Don't list directory contents
+Options -Indexes

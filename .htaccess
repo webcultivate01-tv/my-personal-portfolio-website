@@ -1,0 +1,21 @@
+# --- Portfolio root: served as static files, no front controller needed ---
+
+# Force HTTPS (Hostinger issues a free SSL certificate automatically)
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Never serve dotfiles (.env, .git, .htaccess itself, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Basic browser caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+</IfModule>
