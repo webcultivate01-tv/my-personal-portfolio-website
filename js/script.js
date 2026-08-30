@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mailtoFallback = (name, email, subject, message) => {
       const s = encodeURIComponent(subject || `Message from ${name}`);
       const b = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
-      window.location.href = `mailto:tejasmehar7@gmail.com?subject=${s}&body=${b}`;
+      window.location.href = `mailto:scalewithtejas@gmail.com?subject=${s}&body=${b}`;
       showStatus('Opening your email client so you can send the message…', true);
     };
 

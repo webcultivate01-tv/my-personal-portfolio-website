@@ -116,12 +116,32 @@ li:hover > .timeline-dot { transform:scale(1.08); box-shadow:0 0 0 5px var(--bra
 .contact-chip svg { color:var(--brand-500); }
 
 /* ---------- Country flag badges (Trusted globally) ---------- */
-.flag-badge { display:flex; flex-direction:column; align-items:center; gap:.65rem; cursor:default; }
-.flag-circle { display:grid; place-items:center; width:4.5rem; height:4.5rem; border-radius:9999px; background:#fff; font-size:2.25rem; line-height:1; border:4px solid #fff; box-shadow:0 0 0 1px var(--slate-100), var(--shadow-xl); transition:transform .35s ease, box-shadow .35s ease; }
+.flag-badge { display:flex; flex-direction:column; align-items:center; gap:.35rem; cursor:default; flex-shrink:0; }
+.flag-circle { display:grid; place-items:center; overflow:hidden; width:2.75rem; height:2.75rem; border-radius:9999px; background:var(--slate-100); border:2px solid #fff; box-shadow:0 0 0 1px var(--slate-100), var(--shadow-xl); transition:transform .35s ease, box-shadow .35s ease; }
+.flag-circle img { width:100%; height:100%; object-fit:cover; display:block; }
 .flag-badge:hover .flag-circle { transform:translateY(-.45rem) scale(1.06); box-shadow:0 0 0 3px var(--brand-200), var(--shadow-xl); }
-.flag-name { font-size:.875rem; font-weight:700; color:var(--slate-700); transition:color .25s ease; }
+.flag-name { font-size:.65rem; font-weight:700; color:var(--slate-700); transition:color .25s ease; white-space:nowrap; }
 .flag-badge:hover .flag-name { color:var(--brand-600); }
-@media (min-width:640px) { .flag-circle { width:5.25rem; height:5.25rem; font-size:2.6rem; } }
+@media (min-width:640px) {
+  .flag-badge { gap:.65rem; }
+  .flag-circle { width:5.25rem; height:5.25rem; border-width:4px; }
+  .flag-name { font-size:.875rem; }
+}
+
+/* ---------- Trust stat cards ---------- */
+.stat-card { text-align:center; background:#fff; border:1px solid var(--slate-100); border-radius:1rem; box-shadow:var(--shadow-sm); padding:.85rem .35rem .75rem; transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.stat-card:hover { transform:translateY(-.3rem); box-shadow:var(--shadow-xl); border-color:var(--brand-100); }
+.stat-icon { display:grid; place-items:center; width:2rem; height:2rem; margin:0 auto .4rem; border-radius:9999px; background:var(--brand-50); color:var(--brand-600); }
+.stat-icon svg { width:1rem; height:1rem; }
+@media (min-width:640px) {
+  .stat-card { padding:1.75rem 1rem 1.5rem; }
+  .stat-icon { width:3rem; height:3rem; margin-bottom:.85rem; }
+  .stat-icon svg { width:1.5rem; height:1.5rem; }
+}
+@media (min-width:1024px) {
+  .stat-card { padding:1.35rem 1rem 1.2rem; }
+  .stat-icon { width:2.75rem; height:2.75rem; margin-bottom:.7rem; }
+}
 
 /* ---------- Freelancing / mentorship section ---------- */
 .mentor-badge { display:inline-flex; align-items:center; gap:.5rem; border-radius:9999px; background:#fff; color:var(--brand-700); font-size:.8125rem; font-weight:600; padding:.375rem 1rem; box-shadow:var(--shadow-sm); border:1px solid var(--brand-100); }
