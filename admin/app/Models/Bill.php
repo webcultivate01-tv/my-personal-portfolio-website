@@ -141,10 +141,32 @@ class Bill extends Model
         );
         $id = (int) $this->db->lastInsertId();
 
-        $number = 'BILL-' . date('Y') . '-' . str_pad((string) $id, 4, '0', STR_PAD_LEFT);
+        $number = $this->nextInvoiceNumber();
         $this->run('UPDATE bills SET bill_number = ? WHERE id = ?', [$number, $id]);
 
         return $id;
+    }
+
+    /**
+     * Next invoice number for the current year: INV-2026-001, INV-2026-002, …
+     * so the numbering starts at 2026001 for the first invoice of 2026.
+     * Reads the highest existing sequence for the year and adds one, rather
+     * than counting rows, so a deleted invoice never gets its number reused.
+     */
+    private function nextInvoiceNumber(): string
+    {
+        $year = date('Y');
+        $row  = $this->one(
+            "SELECT bill_number FROM bills WHERE bill_number LIKE ? ORDER BY bill_number DESC LIMIT 1",
+            ['INV-' . $year . '-%']
+        );
+
+        $seq = 1;
+        if ($row !== null && preg_match('/-(\d+)$/', $row['bill_number'], $m)) {
+            $seq = (int) $m[1] + 1;
+        }
+
+        return 'INV-' . $year . '-' . str_pad((string) $seq, 3, '0', STR_PAD_LEFT);
     }
 
     /** Permanently remove a bill. Does not touch the linked client_payments row — the caller decides that. */

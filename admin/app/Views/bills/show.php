@@ -8,6 +8,18 @@
  */
 $money = static fn(?float $n): string => $n === null ? '—' : '₹' . number_format($n, 2);
 $sub   = array_sum(array_column($items, 'amount'));
+$total = $sub; // no taxes/discounts applied yet — Total mirrors Subtotal
+
+// Balance due reflects the whole project (project cost minus everything paid
+// toward it, including this invoice) when a project cost is known; otherwise
+// it falls back to this invoice's own subtotal minus what was paid on it.
+$balanceDue = $bill['balance_due'] !== null
+    ? (float) $bill['balance_due']
+    : ($sub > 0 ? $sub - (float) $bill['amount_paid'] : null);
+
+// Only surface "paid to date" when it differs from this invoice's own payment —
+// i.e. when earlier invoices already collected something toward the same project.
+$priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,8 +37,9 @@ $sub   = array_sum(array_column($items, 'amount'));
     color: #1e293b; text-decoration: none; margin-left: 8px; }
 
   .bill-head { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 20px; border-bottom: 2px solid #1e293b; margin-bottom: 24px; }
-  .bill-head h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: .02em; }
-  .bill-head .bill-no { color: #64748b; font-size: 12.5px; }
+  .bill-head h1 { font-size: 22px; margin: 0 0 8px; letter-spacing: .02em; }
+  .bill-head .bill-no { color: #475569; font-size: 12.5px; line-height: 1.8; }
+  .bill-head .bill-no strong { color: #1e293b; }
   .biz { text-align: right; }
   .biz__name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
   .biz__line { font-size: 12px; color: #475569; line-height: 1.6; }
@@ -71,9 +84,10 @@ $sub   = array_sum(array_column($items, 'amount'));
   <div class="sheet">
     <div class="bill-head">
       <div>
-        <h1>Bill / Receipt</h1>
+        <h1>Invoice</h1>
         <div class="bill-no">
-          <?= e($bill['bill_number']) ?> &nbsp;·&nbsp; <?= e(date('F j, Y', strtotime($bill['bill_date']))) ?>
+          <div><strong>Invoice No:</strong> <?= e($bill['bill_number']) ?></div>
+          <div><strong>Issue Date:</strong> <?= e(date('d M Y', strtotime($bill['bill_date']))) ?></div>
         </div>
       </div>
       <div class="biz">
@@ -96,6 +110,9 @@ $sub   = array_sum(array_column($items, 'amount'));
       <div class="meta">
         <?php if (!empty($bill['project_name'])): ?>
           <div class="line"><strong>Project:</strong> <?= e($bill['project_name']) ?></div>
+        <?php endif; ?>
+        <?php if ($bill['project_cost'] !== null): ?>
+          <div class="line"><strong>Project cost:</strong> <?= e($money((float) $bill['project_cost'])) ?></div>
         <?php endif; ?>
         <div class="line"><strong>Payment method:</strong> <?= e(ucwords(str_replace('_', ' ', $bill['payment_method']))) ?></div>
       </div>
@@ -120,19 +137,16 @@ $sub   = array_sum(array_column($items, 'amount'));
     </table>
 
     <div class="totals">
-      <?php if ($sub > 0): ?>
-        <div class="row"><span>Services subtotal</span><span><?= e($money($sub)) ?></span></div>
+      <div class="row"><span>Subtotal</span><span><?= e($money($sub)) ?></span></div>
+      <div class="row grand"><span>Total</span><span><?= e($money($total)) ?></span></div>
+      <div class="row"><span>Amount Paid</span><span><?= e($money((float) $bill['amount_paid'])) ?></span></div>
+      <?php if ($priorPaid > 0.004): ?>
+        <div class="row"><span>Paid to date</span><span><?= e($money((float) $bill['total_paid'])) ?></span></div>
       <?php endif; ?>
-      <?php if ($bill['project_cost'] !== null): ?>
-        <div class="row"><span>Total project cost</span><span><?= e($money((float) $bill['project_cost'])) ?></span></div>
-      <?php endif; ?>
-      <div class="row grand"><span>Amount paid (this bill)</span><span><?= e($money((float) $bill['amount_paid'])) ?></span></div>
-      <div class="row"><span>Total paid to date</span><span><?= e($money((float) $bill['total_paid'])) ?></span></div>
-      <?php if ($bill['balance_due'] !== null): ?>
-        <?php $due = (float) $bill['balance_due']; ?>
-        <div class="row <?= $due > 0 ? 'due' : 'settled' ?>">
-          <span><?= $due > 0 ? 'Balance due' : ($due < 0 ? 'Advance paid' : 'Balance due') ?></span>
-          <span><?= e($money(abs($due))) ?></span>
+      <?php if ($balanceDue !== null): ?>
+        <div class="row <?= $balanceDue > 0 ? 'due' : 'settled' ?>">
+          <span><?= $balanceDue > 0 ? 'Balance Due' : ($balanceDue < 0 ? 'Advance Paid' : 'Balance Due') ?></span>
+          <span><?= e($money(abs($balanceDue))) ?></span>
         </div>
       <?php endif; ?>
     </div>
@@ -141,7 +155,10 @@ $sub   = array_sum(array_column($items, 'amount'));
       <div class="notes"><strong>Notes:</strong> <?= nl2br(e($bill['notes'])) ?></div>
     <?php endif; ?>
 
-    <div class="footer">Thank you for your business. This is a computer-generated receipt.</div>
+    <div class="footer">
+      Thank you for choosing Tejas Mehar.<br>
+      This is a computer-generated invoice and does not require a signature.
+    </div>
   </div>
 
 </body>
