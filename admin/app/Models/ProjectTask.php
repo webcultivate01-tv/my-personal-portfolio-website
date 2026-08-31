@@ -27,6 +27,16 @@ class ProjectTask extends Model
         );
     }
 
+    /** Task counts across every project, for the dashboard's overall completion ring. */
+    public function overallProgress(): array
+    {
+        $row = $this->one("SELECT COUNT(*) AS total, SUM(status = 'done') AS done FROM project_tasks") ?? [];
+        return [
+            'total' => (int) ($row['total'] ?? 0),
+            'done'  => (int) ($row['done'] ?? 0),
+        ];
+    }
+
     /** Every task assigned to one user, across all projects — for "My Tasks". */
     public function forAssignee(int $userId): array
     {

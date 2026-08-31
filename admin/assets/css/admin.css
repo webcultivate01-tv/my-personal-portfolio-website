@@ -66,10 +66,13 @@ select.form__input{cursor:pointer}
 .alert--success{background:var(--ok-50);color:var(--ok-700);border-color:#a7f3d0}
 .flash-stack{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 
-/* ---------- App shell ---------- */
-.app{min-height:100vh}
+/* ---------- App shell ----------
+   Flexbox rather than fixed+calc: the sidebar takes its fixed basis and the
+   main column is a flex item that reliably fills every remaining pixel,
+   however wide the viewport, with no width math to get wrong. */
+.app{min-height:100vh;display:flex;align-items:stretch}
 
-.sidebar{position:fixed;top:0;left:0;width:264px;height:100vh;display:flex;flex-direction:column;
+.sidebar{position:sticky;top:0;flex:0 0 264px;width:264px;height:100vh;display:flex;flex-direction:column;
   justify-content:space-between;padding:22px 16px;color:var(--slate-600);
   background:#fff;overflow-y:auto;
   border-right:1px solid var(--line)}
@@ -115,7 +118,7 @@ select.form__input{cursor:pointer}
 .avatar--lg{width:38px;height:38px;border-radius:11px;font-size:15px}
 
 /* ---------- Main content ---------- */
-.main{margin-left:264px;padding:34px 40px;width:calc(100% - 264px)}
+.main{flex:1 1 auto;min-width:0;padding:34px 40px}
 .page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
 .page-head__title{margin:0;font-size:26px;font-weight:800;color:var(--slate-900)}
 .page-head__sub{margin:4px 0 0;color:var(--slate-500);font-size:14px}
@@ -131,6 +134,31 @@ select.form__input{cursor:pointer}
 .stat--alert{border-color:#fecaca;box-shadow:0 0 0 1px #fecaca,var(--shadow)}
 .stat--alert .stat__value{color:var(--danger-600)}
 .stat--alert .stat__label{display:inline-flex;align-items:center;gap:6px}
+
+/* ---------- Dashboard overview cards (donut/ring charts) ---------- */
+.overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-bottom:26px}
+.ov-card{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:20px 22px}
+.ov-card__head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.ov-card__title{margin:0;font-size:15px;font-weight:700;color:var(--slate-900)}
+.ov-card__link{font-size:12.5px;font-weight:600;color:var(--brand-600);white-space:nowrap}
+.ov-card__link:hover{text-decoration:underline}
+.ov-card__body{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.ov-card__empty{margin:0;color:var(--slate-400);font-size:13px;line-height:1.6}
+
+.ov-legend{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px;flex:1;min-width:130px}
+.ov-legend li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--slate-600);font-weight:500}
+.ov-legend b{margin-left:auto;color:var(--slate-900);font-weight:700;font-variant-numeric:tabular-nums}
+.ov-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* Ring/donut chart: an SVG ring with the total centered on top of it. */
+.donut{position:relative;flex-shrink:0;display:inline-flex}
+.donut__ring{display:block}
+.donut__ring circle{transition:stroke-dasharray .2s}
+.donut__center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;pointer-events:none}
+.donut__value{font-size:22px;font-weight:800;color:var(--slate-900);line-height:1.1;font-variant-numeric:tabular-nums}
+.donut__label{font-size:10px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
 
 /* ---------- Panels ---------- */
 .panel{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius);overflow:hidden;
@@ -201,7 +229,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
 .tag-you{font-size:10.5px;font-weight:700;color:var(--brand-700);background:var(--brand-50);
   padding:1px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;margin-left:2px}
 
-.row-actions{display:inline-flex;gap:8px;justify-content:flex-end}
+.row-actions{display:inline-flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
 .inline-form{display:inline}
 
 /* ---------- Badges ---------- */
@@ -219,12 +247,16 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
 .badge--spam{background:var(--slate-100);color:var(--slate-500)}
 
 /* ---------- Enquiry Management ---------- */
-/* Filter tabs in the panel head */
-.filter-tabs{display:flex;flex-wrap:wrap;gap:4px}
-.filter-tab{font-size:12.5px;font-weight:600;color:var(--slate-500);padding:6px 12px;border-radius:999px;
-  border:1px solid transparent;transition:.15s}
-.filter-tab:hover{background:var(--slate-100);color:var(--slate-800)}
-.filter-tab.is-active{background:var(--brand-600);color:#fff;box-shadow:0 8px 20px -12px rgba(79,70,229,.7)}
+/* Filter tabs in the panel head — grouped in a track so they read as one
+   segmented control instead of loose pills, and scroll horizontally as a
+   single row on narrow screens instead of wrapping into a ragged block. */
+.filter-tabs{display:flex;flex:1 1 auto;flex-wrap:nowrap;gap:2px;background:var(--slate-100);padding:4px;
+  border-radius:999px;overflow-x:auto;min-width:0;scrollbar-width:none}
+.filter-tabs::-webkit-scrollbar{display:none}
+.filter-tab{font-size:12.5px;font-weight:600;color:var(--slate-500);padding:7px 13px;border-radius:999px;
+  border:1px solid transparent;transition:.15s;white-space:nowrap;flex-shrink:0}
+.filter-tab:hover{background:#fff;color:var(--slate-800)}
+.filter-tab.is-active{background:var(--brand-600);color:#fff;box-shadow:0 4px 12px -4px rgba(79,70,229,.6)}
 
 /* Client enquiry = green highlight */
 .row--client{background:var(--ok-50) !important;box-shadow:inset 3px 0 0 var(--ok-600)}
@@ -387,7 +419,8 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .form-grid{grid-template-columns:1fr}
 }
 @media(max-width:720px){
-  .sidebar{position:static;width:auto;height:auto;flex-direction:row;align-items:center;gap:14px;
+  .app{flex-direction:column}
+  .sidebar{position:static;flex:0 0 auto;width:auto;height:auto;flex-direction:row;align-items:center;gap:14px;
     justify-content:space-between;border-right:none;border-bottom:1px solid var(--line);overflow-y:visible}
   .sidebar__top{flex:1;flex-direction:row;align-items:center;gap:8px;overflow-x:auto}
   .sidebar__brand{padding:0 8px 0 0;margin-bottom:0;border-bottom:none}
@@ -399,8 +432,14 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .user-card{padding:0}
   .user-card__meta{display:none}
   .sidebar__user .btn--block{width:auto;margin-top:0}
-  .main{margin-left:0;padding:24px 20px;width:100%}
+  .main{padding:24px 20px}
   .table{display:block;overflow-x:auto;white-space:nowrap}
+
+  .panel__head{align-items:stretch}
+  .filter-tabs{flex-basis:100%}
+  .filter-bar{flex-direction:column;align-items:stretch}
+  .filter-bar__date{justify-content:space-between}
+  .filter-bar > .btn{margin-left:0;width:100%}
 }
 
 /* ============================================================
@@ -461,11 +500,15 @@ a.stat:hover{border-color:var(--brand-200);box-shadow:0 0 0 1px var(--brand-100)
 .table tr.row--renewing_soon{box-shadow:inset 3px 0 0 #f59e0b}
 
 /* Search + filters row */
-.filter-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 22px;
+.filter-bar{display:flex;flex-wrap:wrap;align-items:center;column-gap:14px;row-gap:10px;padding:14px 22px;
   border-bottom:1px solid var(--slate-100);background:var(--slate-50)}
 .filter-bar .form__input{padding:8px 11px;font-size:13px;border-radius:9px}
 .filter-bar__search{flex:1;min-width:220px}
-.filter-bar__date{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--slate-500)}
+.filter-bar__date{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--slate-500)}
+.filter-bar__date .form__input{min-width:0}
+/* Buttons pin to the right on wide screens; the date fields stay left. */
+.filter-bar > .btn{margin-left:auto}
+.filter-bar > .btn + .btn{margin-left:0}
 
 /* Purchased -> renewed -> expires strip on a record */
 .renew-timeline{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:16px 22px;font-size:13.5px;

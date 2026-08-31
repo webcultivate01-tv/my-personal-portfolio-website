@@ -34,6 +34,19 @@ class Client extends Model
         return (int) ($row['c'] ?? 0);
     }
 
+    /** Total invoiced vs total received across every client, for the dashboard's collection ring. */
+    public function financialSummary(): array
+    {
+        $row = $this->one(
+            "SELECT COALESCE((SELECT SUM(amount) FROM client_invoices WHERE status != 'cancelled'), 0) AS invoiced,
+                    COALESCE((SELECT SUM(amount) FROM client_payments), 0) AS paid"
+        ) ?? [];
+        return [
+            'invoiced' => (float) ($row['invoiced'] ?? 0),
+            'paid'     => (float) ($row['paid'] ?? 0),
+        ];
+    }
+
     /** Add a new client. Returns its new id. */
     public function create(array $d, ?int $createdBy): int
     {

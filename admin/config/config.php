@@ -83,8 +83,56 @@ function url(string $path = '/'): string
     return BASE_PATH . '/' . ltrim($path, '/');
 }
 
-/** Build a URL to a static asset: asset('css/admin.css'). */
+/**
+ * Build a URL to a static asset: asset('css/admin.css').
+ * Appends the file's mtime as a cache-busting query string so edits show up
+ * immediately instead of serving a stale, browser-cached copy.
+ */
 function asset(string $path): string
 {
-    return BASE_PATH . '/assets/' . ltrim($path, '/');
+    $path = ltrim($path, '/');
+    $file = __DIR__ . '/../assets/' . $path;
+    $v    = is_file($file) ? '?v=' . filemtime($file) : '';
+
+    return BASE_PATH . '/assets/' . $path . $v;
+}
+
+/**
+ * Render an inline SVG ring/donut chart for the dashboard overview cards.
+ *
+ * $segments: list of ['value' => float, 'color' => '#hex'], zero-value
+ * segments are skipped. $centerHtml is placed in the middle of the ring —
+ * caller is responsible for escaping anything dynamic inside it.
+ */
+function donut_svg(array $segments, string $centerHtml = '', int $size = 132, int $stroke = 16): string
+{
+    $r    = ($size - $stroke) / 2;
+    $cx   = $size / 2;
+    $circumference = 2 * M_PI * $r;
+
+    $visible = array_values(array_filter($segments, static fn(array $s): bool => $s['value'] > 0));
+    $total   = array_sum(array_column($segments, 'value'));
+    $gap     = count($visible) > 1 ? 2.5 : 0;
+
+    $svg = '<svg class="donut__ring" viewBox="0 0 ' . $size . ' ' . $size . '" width="' . $size . '" height="' . $size . '" aria-hidden="true">'
+         . '<circle cx="' . $cx . '" cy="' . $cx . '" r="' . $r . '" fill="none" stroke="#eef1f6" stroke-width="' . $stroke . '"/>';
+
+    if ($total > 0) {
+        $offset = 0.0;
+        foreach ($visible as $seg) {
+            $len  = ($seg['value'] / $total) * $circumference;
+            $dash = max($len - $gap, 0.5);
+            $svg .= '<circle cx="' . $cx . '" cy="' . $cx . '" r="' . $r . '" fill="none" stroke="' . e((string) $seg['color'])
+                  . '" stroke-width="' . $stroke . '" stroke-linecap="round"'
+                  . ' stroke-dasharray="' . round($dash, 2) . ' ' . round($circumference - $dash, 2) . '"'
+                  . ' stroke-dashoffset="' . round(-$offset, 2) . '"'
+                  . ' transform="rotate(-90 ' . $cx . ' ' . $cx . ')"/>';
+            $offset += $len;
+        }
+    }
+
+    $svg .= '</svg>';
+
+    return '<div class="donut" style="width:' . $size . 'px;height:' . $size . 'px">' . $svg
+         . '<div class="donut__center">' . $centerHtml . '</div></div>';
 }

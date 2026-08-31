@@ -58,6 +58,18 @@ class Project extends Model
         return (int) ($row['c'] ?? 0);
     }
 
+    /** Every status count in one query, always keyed by all STATUSES (0 when empty). */
+    public function countsByStatus(): array
+    {
+        $out = array_fill_keys(self::STATUSES, 0);
+        foreach ($this->all('SELECT status, COUNT(*) AS c FROM projects GROUP BY status') as $row) {
+            if (isset($out[$row['status']])) {
+                $out[$row['status']] = (int) $row['c'];
+            }
+        }
+        return $out;
+    }
+
     /** Add a new project. Returns its new id. */
     public function create(array $d, ?int $createdBy): int
     {

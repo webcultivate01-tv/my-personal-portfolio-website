@@ -81,6 +81,18 @@ class User extends Model
         return (int) ($row['c'] ?? 0);
     }
 
+    /** Team headcount by role, for the dashboard's team overview. */
+    public function roleCounts(): array
+    {
+        $out = array_fill_keys(self::ROLES, 0);
+        foreach ($this->all('SELECT role, COUNT(*) AS c FROM users GROUP BY role') as $row) {
+            if (isset($out[$row['role']])) {
+                $out[$row['role']] = (int) $row['c'];
+            }
+        }
+        return $out;
+    }
+
     /**
      * Create a fully onboarded user — every hire-time field, like a company
      * would collect when hiring an employee. $profile keys match the
