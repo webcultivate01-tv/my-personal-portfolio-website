@@ -40,23 +40,26 @@ $priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
   .bill-head h1 { font-size: 22px; margin: 0 0 8px; letter-spacing: .02em; }
   .bill-head .bill-no { color: #475569; font-size: 12.5px; line-height: 1.8; }
   .bill-head .bill-no strong { color: #1e293b; }
-  .biz { text-align: right; }
-  .biz__name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
-  .biz__line { font-size: 12px; color: #475569; line-height: 1.6; }
+  .biz { text-align: left; }
+  .biz__name { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .biz__line { font-size: 12px; color: #475569; line-height: 2; white-space: nowrap; }
+  .biz__line strong { display: inline-block; min-width: 50px; color: #1e293b; font-weight: 600; }
 
   .parties { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
   .party h2 { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; margin: 0 0 6px; }
   .party .name { font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
   .party .line { font-size: 12.5px; color: #475569; line-height: 1.6; }
-  .meta { text-align: right; }
-  .meta .line { font-size: 12.5px; color: #475569; line-height: 1.9; }
-  .meta .line strong { color: #1e293b; }
+  .meta { text-align: left; }
+  .meta .line { font-size: 12.5px; color: #475569; line-height: 2; white-space: nowrap; }
+  .meta .line strong { display: inline-block; min-width: 112px; color: #1e293b; }
 
   table.items { width: 100%; border-collapse: collapse; margin-bottom: 22px; }
   table.items th { text-align: left; background: #f1f5f9; font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
     color: #475569; padding: 9px 12px; }
+  table.items th.ta-num, table.items td.ta-num { width: 44px; text-align: center; }
   table.items th.ta-right, table.items td.ta-right { text-align: right; }
   table.items td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: 13px; }
+  table.items td.ta-num { color: #94a3b8; }
 
   .totals { margin-left: auto; width: 300px; }
   .totals .row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 13px; color: #475569; }
@@ -92,9 +95,9 @@ $priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
       </div>
       <div class="biz">
         <div class="biz__name">Tejas Mehar</div>
-        <div class="biz__line">Mobile: +91 7821096438</div>
-        <div class="biz__line">Email: scalewithtejas@gmail.com</div>
-        <div class="biz__line">Website: www.tejasmehar.in</div>
+        <div class="biz__line"><strong>Mobile:</strong> +91 7821096438</div>
+        <div class="biz__line"><strong>Email:</strong> scalewithtejas@gmail.com</div>
+        <div class="biz__line"><strong>Website:</strong> www.tejasmehar.in</div>
       </div>
     </div>
 
@@ -120,14 +123,15 @@ $priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
 
     <table class="items">
       <thead>
-        <tr><th>Service</th><th class="ta-right">Amount</th></tr>
+        <tr><th class="ta-num">No.</th><th>Service</th><th class="ta-right">Amount</th></tr>
       </thead>
       <tbody>
         <?php if (empty($items)): ?>
-          <tr><td colspan="2" style="color:#94a3b8;">No line items recorded.</td></tr>
+          <tr><td colspan="3" style="color:#94a3b8;">No line items recorded.</td></tr>
         <?php else: ?>
-          <?php foreach ($items as $item): ?>
+          <?php foreach ($items as $i => $item): ?>
             <tr>
+              <td class="ta-num"><?= (int) $i + 1 ?></td>
               <td><?= e($item['description'] ?? '') ?></td>
               <td class="ta-right"><?= isset($item['amount']) && $item['amount'] > 0 ? e($money((float) $item['amount'])) : '—' ?></td>
             </tr>
