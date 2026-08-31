@@ -23,6 +23,64 @@ class Bill extends Model
         );
     }
 
+    /**
+     * Bills narrowed by the history page's filter bar: free-text search
+     * (bill number / client / project), client, project, payment method,
+     * and a bill-date range. Any filter left blank/empty is skipped.
+     */
+    public function search(array $f = []): array
+    {
+        $where  = [];
+        $params = [];
+
+        $q = trim((string) ($f['q'] ?? ''));
+        if ($q !== '') {
+            $where[] = '(b.bill_number LIKE ? OR c.name LIKE ? OR c.company LIKE ? OR p.name LIKE ?)';
+            $like    = '%' . $q . '%';
+            array_push($params, $like, $like, $like, $like);
+        }
+
+        $clientId = (int) ($f['client_id'] ?? 0);
+        if ($clientId > 0) {
+            $where[]  = 'b.client_id = ?';
+            $params[] = $clientId;
+        }
+
+        $projectId = (int) ($f['project_id'] ?? 0);
+        if ($projectId > 0) {
+            $where[]  = 'b.project_id = ?';
+            $params[] = $projectId;
+        }
+
+        $method = (string) ($f['payment_method'] ?? '');
+        if (in_array($method, ClientPayment::METHODS, true)) {
+            $where[]  = 'b.payment_method = ?';
+            $params[] = $method;
+        }
+
+        $from = (string) ($f['from'] ?? '');
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $from)) {
+            $where[]  = 'b.bill_date >= ?';
+            $params[] = $from;
+        }
+        $to = (string) ($f['to'] ?? '');
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $to)) {
+            $where[]  = 'b.bill_date <= ?';
+            $params[] = $to;
+        }
+
+        $sql = 'SELECT b.*, c.name AS client_name, c.company AS client_company, p.name AS project_name
+                FROM bills b
+                JOIN clients c ON c.id = b.client_id
+                LEFT JOIN projects p ON p.id = b.project_id';
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+        $sql .= ' ORDER BY b.bill_date DESC, b.id DESC';
+
+        return $this->all($sql, $params);
+    }
+
     /** All bills raised for one client, newest first. */
     public function forClient(int $clientId): array
     {
@@ -89,6 +147,13 @@ class Bill extends Model
     {
         $row = $this->one('SELECT COALESCE(SUM(amount_paid), 0) AS t FROM bills');
         return (float) ($row['t'] ?? 0);
+    }
+
+    /** How many bills exist in total, regardless of any filter applied to the history list. */
+    public function totalCount(): int
+    {
+        $row = $this->one('SELECT COUNT(*) AS c FROM bills');
+        return (int) ($row['c'] ?? 0);
     }
 
     /**

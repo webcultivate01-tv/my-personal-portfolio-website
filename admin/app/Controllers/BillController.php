@@ -28,11 +28,20 @@ class BillController extends Controller
 
         $bills = new Bill();
 
+        $filters = [
+            'q'              => trim((string) ($_GET['q'] ?? '')),
+            'client_id'      => (int) ($_GET['client_id'] ?? 0),
+            'project_id'     => (int) ($_GET['project_id'] ?? 0),
+            'payment_method' => (string) ($_GET['payment_method'] ?? ''),
+            'from'           => (string) ($_GET['from'] ?? ''),
+            'to'             => (string) ($_GET['to'] ?? ''),
+        ];
+
         $this->view('bills/index', [
             'title'             => 'Billing',
             'active'            => 'bills',
             'csrf'              => $this->csrfToken(),
-            'bills'             => $bills->allWithDetails(),
+            'bills'             => $bills->search($filters),
             'clients'           => (new Client())->allForSelect(),
             'projects'          => (new Project())->allForSelect(),
             'paidByProject'     => $bills->paidByProject(),
@@ -40,8 +49,12 @@ class BillController extends Controller
             'receivedThisMonth' => $bills->receivedThisMonth(),
             'pendingTotal'      => $bills->pendingAmountTotal(),
             'totalCollected'    => $bills->totalCollected(),
+            'totalBills'        => $bills->totalCount(),
             'today'             => date('Y-m-d'),
-            'preselectClient'   => (int) ($_GET['client_id'] ?? 0),
+            'filters'           => $filters,
+            // "+ Raise a bill" links from a client's own page add ?new=1 so the form opens
+            // pre-filled for them; arriving via the filter bar's client picker does not.
+            'openCreateForm'    => isset($_GET['new']) && $filters['client_id'] > 0,
         ]);
     }
 

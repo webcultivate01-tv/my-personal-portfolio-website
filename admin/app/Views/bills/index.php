@@ -6,10 +6,11 @@
  *
  * @var string $csrf @var array $bills @var array $clients @var array $projects
  * @var array $paidByProject @var array $methods
- * @var float $receivedThisMonth @var float $pendingTotal @var float $totalCollected @var string $today
- * @var int $preselectClient
+ * @var float $receivedThisMonth @var float $pendingTotal @var float $totalCollected @var int $totalBills
+ * @var string $today @var array $filters @var bool $openCreateForm
  */
 $money = static fn(float $n): string => '₹' . number_format($n, 2);
+$hasFilters = array_filter($filters) !== [];
 ?>
 <header class="page-head">
   <div>
@@ -20,7 +21,7 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
 </header>
 
 <section class="stat-grid">
-  <div class="stat"><span class="stat__label">Bills raised</span><span class="stat__value"><?= count($bills) ?></span></div>
+  <div class="stat"><span class="stat__label">Bills raised</span><span class="stat__value"><?= $totalBills ?></span></div>
   <div class="stat"><span class="stat__label">Received this month</span><span class="stat__value stat__value--money"><?= e($money($receivedThisMonth)) ?></span></div>
   <div class="stat"><span class="stat__label">Total collected</span><span class="stat__value stat__value--money"><?= e($money($totalCollected)) ?></span></div>
   <div class="stat<?= $pendingTotal > 0 ? ' stat--alert' : '' ?>">
@@ -29,7 +30,7 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
   </div>
 </section>
 
-<section class="panel panel--pad" id="bill-form"<?= $preselectClient > 0 ? '' : ' hidden' ?>>
+<section class="panel panel--pad" id="bill-form"<?= $openCreateForm ? '' : ' hidden' ?>>
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Raise a new bill</h2>
   </div>
@@ -43,7 +44,7 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
       <select class="form__input" id="client_id" name="client_id" required>
         <option value="">Select a client…</option>
         <?php foreach ($clients as $c): ?>
-          <option value="<?= (int) $c['id'] ?>"<?= $preselectClient === (int) $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?><?= $c['company'] ? ' — ' . e($c['company']) : '' ?></option>
+          <option value="<?= (int) $c['id'] ?>"<?= $filters['client_id'] === (int) $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?><?= $c['company'] ? ' — ' . e($c['company']) : '' ?></option>
         <?php endforeach; ?>
       </select>
     </div>
@@ -108,11 +109,48 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
 <section class="panel">
   <div class="panel__head">
     <h2 class="panel__title">Bill history</h2>
-    <span class="panel__count"><?= count($bills) ?> total</span>
+    <span class="panel__count"><?= count($bills) ?> shown</span>
   </div>
 
+  <form class="filter-bar" method="get" action="<?= url('/bills') ?>">
+    <input class="form__input filter-bar__search" type="search" name="q" value="<?= e($filters['q']) ?>"
+           placeholder="Search bill #, client or project…">
+    <select class="form__input" name="client_id">
+      <option value="">All clients</option>
+      <?php foreach ($clients as $c): ?>
+        <option value="<?= (int) $c['id'] ?>"<?= $filters['client_id'] === (int) $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <select class="form__input" name="project_id">
+      <option value="">All projects</option>
+      <?php foreach ($projects as $p): ?>
+        <option value="<?= (int) $p['id'] ?>"<?= $filters['project_id'] === (int) $p['id'] ? ' selected' : '' ?>><?= e($p['name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <select class="form__input" name="payment_method">
+      <option value="">All methods</option>
+      <?php foreach ($methods as $m): ?>
+        <option value="<?= e($m) ?>"<?= $filters['payment_method'] === $m ? ' selected' : '' ?>><?= e(ucwords(str_replace('_', ' ', $m))) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <label class="filter-bar__date">From
+      <input class="form__input" type="date" name="from" value="<?= e($filters['from']) ?>">
+    </label>
+    <label class="filter-bar__date">to
+      <input class="form__input" type="date" name="to" value="<?= e($filters['to']) ?>">
+    </label>
+    <button type="submit" class="btn btn--sm btn--primary">Apply</button>
+    <a class="btn btn--sm btn--ghost" href="<?= url('/bills') ?>">Reset</a>
+  </form>
+
   <?php if (empty($bills)): ?>
-    <p class="empty">No bills raised yet. Use <strong>+ Raise a bill</strong> above the next time a client pays.</p>
+    <p class="empty">
+      <?php if ($hasFilters): ?>
+        Nothing matches those filters. <a href="<?= url('/bills') ?>">Clear them</a> to see every bill.
+      <?php else: ?>
+        No bills raised yet. Use <strong>+ Raise a bill</strong> above the next time a client pays.
+      <?php endif; ?>
+    </p>
   <?php else: ?>
     <table class="table">
       <thead>

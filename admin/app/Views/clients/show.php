@@ -270,7 +270,7 @@ $openInvoices = array_filter($invoices, static fn(array $i): bool => $i['status'
     <h2 class="panel__title">Bills</h2>
     <div class="panel__actions">
       <span class="panel__count"><?= count($bills) ?> raised</span>
-      <a class="btn btn--sm btn--primary" href="<?= url('/bills') ?>?client_id=<?= (int) $client['id'] ?>">+ Raise a bill</a>
+      <a class="btn btn--sm btn--primary" href="<?= url('/bills') ?>?client_id=<?= (int) $client['id'] ?>&new=1">+ Raise a bill</a>
     </div>
   </div>
 
