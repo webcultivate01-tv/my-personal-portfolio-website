@@ -36,6 +36,7 @@ $tabs = [
     'all'       => 'All',
     'important' => 'Important',
     'client'    => 'Clients',
+    'unread'    => 'Unread',
     'new'       => 'New',
     'contacted' => 'Contacted',
     'quoted'    => 'Quoted',
@@ -55,14 +56,22 @@ $tabs = [
 </header>
 
 <section class="stat-grid">
-  <div class="stat"><span class="stat__label">Total</span><span class="stat__value"><?= (int) $total ?></span></div>
-  <div class="stat"><span class="stat__label">New (status)</span><span class="stat__value"><?= (int) $newCount ?></span></div>
-  <div class="stat<?= $unreadCount > 0 ? ' stat--alert' : '' ?>">
+  <a class="stat<?= $filter === 'all' ? ' is-active' : '' ?>" href="<?= e($tab('all')) ?>">
+    <span class="stat__label">Total</span><span class="stat__value"><?= (int) $total ?></span>
+  </a>
+  <a class="stat<?= $filter === 'new' ? ' is-active' : '' ?>" href="<?= e($tab('new')) ?>">
+    <span class="stat__label">New (status)</span><span class="stat__value"><?= (int) $newCount ?></span>
+  </a>
+  <a class="stat<?= $unreadCount > 0 ? ' stat--alert' : '' ?><?= $filter === 'unread' ? ' is-active' : '' ?>" href="<?= e($tab('unread')) ?>">
     <span class="stat__label"><?php if ($unreadCount > 0): ?><span class="unread-dot"></span><?php endif; ?>Unread</span>
     <span class="stat__value"><?= (int) $unreadCount ?></span>
-  </div>
-  <div class="stat"><span class="stat__label">Important</span><span class="stat__value"><?= (int) $importantCount ?></span></div>
-  <div class="stat"><span class="stat__label">Clients</span><span class="stat__value"><?= (int) $clientCount ?></span></div>
+  </a>
+  <a class="stat<?= $filter === 'important' ? ' is-active' : '' ?>" href="<?= e($tab('important')) ?>">
+    <span class="stat__label">Important</span><span class="stat__value"><?= (int) $importantCount ?></span>
+  </a>
+  <a class="stat<?= $filter === 'client' ? ' is-active' : '' ?>" href="<?= e($tab('client')) ?>">
+    <span class="stat__label">Clients</span><span class="stat__value"><?= (int) $clientCount ?></span>
+  </a>
 </section>
 
 <section class="panel">

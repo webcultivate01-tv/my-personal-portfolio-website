@@ -16,7 +16,7 @@ use App\Models\LeadNote;
 class EnquiryController extends Controller
 {
     /** Filters offered in the toolbar. */
-    private const FILTERS = ['all', 'important', 'client', 'new', 'contacted', 'quoted', 'won', 'lost', 'spam'];
+    private const FILTERS = ['all', 'important', 'client', 'unread', 'new', 'contacted', 'quoted', 'won', 'lost', 'spam'];
 
     /** List every enquiry (admins and managers). */
     public function index(): void

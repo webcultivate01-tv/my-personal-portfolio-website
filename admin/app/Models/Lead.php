@@ -82,6 +82,8 @@ class Lead extends Model
             $conditions[] = 'is_important = 1';
         } elseif ($filter === 'client') {
             $conditions[] = 'is_client = 1';
+        } elseif ($filter === 'unread') {
+            $conditions[] = 'is_read = 0';
         } elseif (in_array($filter, self::STATUSES, true)) {
             $conditions[] = 'status = ?';
             $params[]     = $filter;
