@@ -9,5 +9,7 @@
 </head>
 <body class="auth">
   <?= $content ?>
+
+  <script src="<?= asset('js/password-toggle.js') ?>"></script>
 </body>
 </html>

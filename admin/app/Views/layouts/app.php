@@ -39,7 +39,15 @@ $is = static fn(string $key): string => $active === $key ? ' is-active' : '';
   <link rel="stylesheet" href="<?= asset('css/admin.css') ?>">
 </head>
 <body class="app">
-  <aside class="sidebar">
+  <div class="mobile-topbar">
+    <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-controls="sidebar" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="mobile-topbar__brand"><span class="sidebar__logo">TM</span> Admin panel</span>
+  </div>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar__top">
       <div class="sidebar__brand">
         <span class="sidebar__logo">TM</span>
@@ -121,5 +129,8 @@ $is = static fn(string $key): string => $active === $key ? ' is-active' : '';
 
     <?= $content ?>
   </main>
+
+  <script src="<?= asset('js/sidebar.js') ?>"></script>
+  <script src="<?= asset('js/password-toggle.js') ?>"></script>
 </body>
 </html>

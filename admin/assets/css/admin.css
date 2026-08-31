@@ -48,6 +48,15 @@ svg{flex-shrink:0}
 .form__input:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px var(--brand-100)}
 select.form__input{cursor:pointer}
 
+/* Show/hide toggle injected around every password field, see password-toggle.js */
+.password-field{position:relative}
+.password-field .form__input{width:100%;padding-right:42px}
+.password-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);
+  display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;
+  border:none;background:transparent;color:var(--slate-400);cursor:pointer;border-radius:8px;transition:.15s}
+.password-toggle:hover{background:var(--slate-100);color:var(--slate-700)}
+.password-toggle svg{width:18px;height:18px}
+
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;
   font-family:inherit;font-weight:600;font-size:14px;border-radius:999px;border:1px solid transparent;
   padding:11px 18px;transition:.15s;white-space:nowrap}
@@ -73,8 +82,9 @@ select.form__input{cursor:pointer}
 
 .sidebar{position:fixed;top:0;left:0;width:264px;height:100vh;display:flex;flex-direction:column;
   justify-content:space-between;padding:22px 16px;color:var(--slate-600);
-  background:#fff;overflow-y:auto;
+  background:#fff;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;
   border-right:1px solid var(--line)}
+.sidebar::-webkit-scrollbar{display:none}
 .sidebar__top{display:flex;flex-direction:column;min-height:0}
 
 .sidebar__brand{display:flex;align-items:center;gap:12px;padding:6px 8px 20px;margin-bottom:6px;
@@ -115,6 +125,23 @@ select.form__input{cursor:pointer}
 .avatar{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0;
   font-weight:700;font-size:13px;color:#fff;background:linear-gradient(135deg,var(--brand-500),var(--brand-700))}
 .avatar--lg{width:38px;height:38px;border-radius:11px;font-size:15px}
+
+/* ---------- Mobile topbar + hamburger (drawer trigger) ----------
+   Hidden entirely above the 720px breakpoint, where the sidebar is
+   always visible in place; see the responsive section for the drawer
+   behaviour itself. */
+.mobile-topbar{display:none;align-items:center;gap:12px;position:fixed;top:0;left:0;right:0;height:60px;
+  padding:0 16px;background:#fff;border-bottom:1px solid var(--line);z-index:55}
+.mobile-topbar__brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14.5px;color:var(--slate-900)}
+.sidebar-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;
+  border-radius:10px;border:1px solid var(--slate-200);background:#fff;color:var(--slate-600);
+  cursor:pointer;flex-shrink:0;transition:.15s}
+.sidebar-toggle:hover{background:var(--slate-100);color:var(--slate-900)}
+.sidebar-toggle svg{width:20px;height:20px}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:59}
+.sidebar-backdrop.is-open{opacity:1;pointer-events:auto}
+body.no-scroll{overflow:hidden}
 
 /* ---------- Main content ---------- */
 .main{margin-left:264px;padding:34px 40px}
@@ -418,19 +445,15 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .form-grid{grid-template-columns:1fr}
 }
 @media(max-width:720px){
-  .sidebar{position:static;width:auto;height:auto;flex-direction:row;align-items:center;gap:14px;
-    justify-content:space-between;border-right:none;border-bottom:1px solid var(--line);overflow-y:visible}
-  .sidebar__top{flex:1;flex-direction:row;align-items:center;gap:8px;overflow-x:auto}
-  .sidebar__brand{padding:0 8px 0 0;margin-bottom:0;border-bottom:none}
-  .sidebar__nav{flex-direction:row;flex-wrap:nowrap;align-items:center}
-  .nav-label{display:none}
-  .nav-item{padding:8px 11px;white-space:nowrap}
-  .nav-item.is-active{box-shadow:inset 0 -3px 0 var(--brand-500)}
-  .sidebar__user{border-top:none;padding-top:0;display:flex;align-items:center;gap:10px}
-  .user-card{padding:0}
-  .user-card__meta{display:none}
-  .sidebar__user .btn--block{width:auto;margin-top:0}
-  .main{margin-left:0;padding:24px 20px}
+  /* Sidebar becomes an off-canvas drawer: hidden past the left edge until
+     the hamburger toggles .is-open, sliding over the content rather than
+     pushing it (a fixed backdrop behind it closes the drawer on tap). */
+  .mobile-topbar{display:flex}
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease;
+    width:270px;max-width:82vw;box-shadow:var(--shadow-lg);z-index:60}
+  .sidebar.is-open{transform:translateX(0)}
+  .sidebar-backdrop{display:block}
+  .main{margin-left:0;padding:84px 20px 24px}
   .table{display:block;overflow-x:auto;white-space:nowrap}
 
   .panel__head{align-items:stretch}
@@ -438,6 +461,26 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .filter-bar{flex-direction:column;align-items:stretch}
   .filter-bar__date{justify-content:space-between}
   .filter-bar > .btn{margin-left:0;width:100%}
+
+  .page-head{flex-wrap:wrap}
+  .page-head > .btn{width:100%}
+
+  /* Dashboard overview cards */
+  .overview-grid{grid-template-columns:1fr;gap:12px}
+  .ov-card{padding:16px 18px}
+  .ov-card__body{gap:16px}
+
+  /* Hosting renewal widget on the dashboard */
+  .host-alert{gap:8px}
+  .host-alert__item{flex:1 1 140px}
+  .host-alert__row{flex-wrap:wrap;row-gap:4px}
+}
+@media(max-width:480px){
+  .page-head__title{font-size:22px}
+  .donut{width:104px !important;height:104px !important}
+  .donut__ring{width:104px;height:104px}
+  .ov-card__body{flex-direction:column;align-items:flex-start}
+  .ov-legend{width:100%}
 }
 
 /* ============================================================
