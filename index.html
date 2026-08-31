@@ -35,6 +35,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
 
+  <!-- Inline fallback: keeps the "Trusted globally" badge styled even if the
+       server's css/style.css hasn't been re-uploaded yet with this block. -->
+  <style>
+    .trust-badge { display:inline-flex; align-items:center; gap:.5rem; border-radius:9999px; background:var(--brand-50); color:var(--brand-700); font-size:.75rem; font-weight:600; padding:.375rem 1rem; box-shadow:0 0 0 1px var(--brand-100); }
+    @media (min-width:640px) { .trust-badge { font-size:.875rem; } }
+    .trust-badge-dot { width:.5rem; height:.5rem; border-radius:9999px; background:#10b981; animation:trustPulse 2s cubic-bezier(0,0,.2,1) infinite; }
+    @keyframes trustPulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+  </style>
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
