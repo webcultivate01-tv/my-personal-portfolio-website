@@ -15,6 +15,9 @@ class Lead extends Model
     /** Statuses an enquiry can move through. */
     public const STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost', 'spam'];
 
+    /** Subject options offered on the public contact form. */
+    public const SUBJECTS = ['Project Inquiry', 'General Inquiry', 'Business Collaboration', 'Pricing & Plans'];
+
     // ---------- Dashboard summaries ----------
 
     public function totalCount(): int
@@ -69,11 +72,12 @@ class Lead extends Model
     // ---------- Enquiry management ----------
 
     /**
-     * List enquiries, newest first, with an optional filter and date range.
+     * List enquiries, newest first, with an optional filter, subject and date range.
      * $filter: 'all' | 'important' | 'client' | one of STATUSES.
+     * $subject: one of SUBJECTS, or null/'' to leave unfiltered.
      * $dateFrom / $dateTo: 'YYYY-MM-DD' strings, or null to leave that bound open.
      */
-    public function list(string $filter = 'all', ?string $dateFrom = null, ?string $dateTo = null): array
+    public function list(string $filter = 'all', ?string $dateFrom = null, ?string $dateTo = null, ?string $subject = null): array
     {
         $conditions = [];
         $params     = [];
@@ -87,6 +91,11 @@ class Lead extends Model
         } elseif (in_array($filter, self::STATUSES, true)) {
             $conditions[] = 'status = ?';
             $params[]     = $filter;
+        }
+
+        if ($subject !== null && $subject !== '') {
+            $conditions[] = 'subject = ?';
+            $params[]     = $subject;
         }
 
         if ($dateFrom !== null && $dateFrom !== '') {

@@ -2,12 +2,12 @@
 /**
  * @var string $csrf @var string $filter @var array $enquiries
  * @var int $total @var int $newCount @var int $unreadCount @var int $importantCount @var int $clientCount
- * @var array $statuses @var string $dateFrom @var string $dateTo
+ * @var array $statuses @var string $dateFrom @var string $dateTo @var string $subject @var array $subjects
  */
 $isAdmin = \App\Core\Auth::isAdmin();
 
-/** Build a filter-tab URL, preserving the current date range. */
-$tab = static function (string $key) use ($dateFrom, $dateTo): string {
+/** Build a filter-tab URL, preserving the current date range and subject. */
+$tab = static function (string $key) use ($dateFrom, $dateTo, $subject): string {
     $params = [];
     if ($key !== 'all') {
         $params['filter'] = $key;
@@ -18,17 +18,21 @@ $tab = static function (string $key) use ($dateFrom, $dateTo): string {
     if ($dateTo !== '') {
         $params['date_to'] = $dateTo;
     }
+    if ($subject !== '') {
+        $params['subject'] = $subject;
+    }
     return url('/enquiries') . ($params ? '?' . http_build_query($params) : '');
 };
 
-/** Export PDF URL, honouring the current filter + date range. */
+/** Export PDF URL, honouring the current filter + date range + subject. */
 $exportUrl = url('/enquiries/export') . '?' . http_build_query(array_filter([
     'filter'    => $filter !== 'all' ? $filter : null,
     'date_from' => $dateFrom !== '' ? $dateFrom : null,
     'date_to'   => $dateTo !== '' ? $dateTo : null,
+    'subject'   => $subject !== '' ? $subject : null,
 ]));
 
-/** Current status tab with the date range stripped, for "Clear dates". */
+/** Current status tab with the date range and subject stripped, for "Clear dates". */
 $clearDatesUrl = url('/enquiries') . ($filter !== 'all' ? '?filter=' . $filter : '');
 
 /** Filter tabs: key => label. */
@@ -92,16 +96,24 @@ $tabs = [
     <label class="filter-bar__date">to
       <input class="form__input" type="date" name="date_to" value="<?= e($dateTo) ?>">
     </label>
+    <label class="filter-bar__date">Subject
+      <select class="form__input" name="subject">
+        <option value="">All subjects</option>
+        <?php foreach ($subjects as $subj): ?>
+          <option value="<?= e($subj) ?>"<?= $subject === $subj ? ' selected' : '' ?>><?= e($subj) ?></option>
+        <?php endforeach; ?>
+      </select>
+    </label>
     <button type="submit" class="btn btn--sm btn--primary">Apply</button>
-    <?php if ($dateFrom !== '' || $dateTo !== ''): ?>
-      <a class="btn btn--sm btn--ghost" href="<?= e($clearDatesUrl) ?>">Clear dates</a>
+    <?php if ($dateFrom !== '' || $dateTo !== '' || $subject !== ''): ?>
+      <a class="btn btn--sm btn--ghost" href="<?= e($clearDatesUrl) ?>">Clear filters</a>
     <?php endif; ?>
   </form>
 
   <?php if (empty($enquiries)): ?>
     <p class="empty">
-      <?php if ($filter !== 'all' || $dateFrom !== '' || $dateTo !== ''): ?>
-        Nothing matches that filter<?= ($dateFrom !== '' || $dateTo !== '') ? ' and date range' : '' ?>.
+      <?php if ($filter !== 'all' || $dateFrom !== '' || $dateTo !== '' || $subject !== ''): ?>
+        Nothing matches that filter<?= ($dateFrom !== '' || $dateTo !== '' || $subject !== '') ? ' and criteria' : '' ?>.
         <a href="<?= url('/enquiries') ?>">Clear it</a> to see every enquiry.
       <?php else: ?>
         No enquiries here yet. When someone submits the contact form on your site,

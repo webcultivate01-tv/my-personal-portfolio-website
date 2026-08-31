@@ -30,6 +30,7 @@ class EnquiryController extends Controller
 
         $dateFrom = $this->validDate($_GET['date_from'] ?? '');
         $dateTo   = $this->validDate($_GET['date_to'] ?? '');
+        $subject  = $this->validSubject($_GET['subject'] ?? '');
 
         $leads = new Lead();
 
@@ -40,13 +41,15 @@ class EnquiryController extends Controller
             'filter'        => $filter,
             'dateFrom'      => $dateFrom ?? '',
             'dateTo'        => $dateTo ?? '',
-            'enquiries'     => $leads->list($filter, $dateFrom, $dateTo),
+            'subject'       => $subject ?? '',
+            'enquiries'     => $leads->list($filter, $dateFrom, $dateTo, $subject),
             'total'         => $leads->totalCount(),
             'newCount'      => $leads->countByStatus('new'),
             'unreadCount'   => $leads->countUnread(),
             'importantCount'=> $leads->countFlag('is_important'),
             'clientCount'   => $leads->countFlag('is_client'),
             'statuses'      => Lead::STATUSES,
+            'subjects'      => Lead::SUBJECTS,
         ]);
     }
 
@@ -66,6 +69,7 @@ class EnquiryController extends Controller
 
         $dateFrom = $this->validDate($_GET['date_from'] ?? '');
         $dateTo   = $this->validDate($_GET['date_to'] ?? '');
+        $subject  = $this->validSubject($_GET['subject'] ?? '');
 
         $leads = new Lead();
 
@@ -74,7 +78,8 @@ class EnquiryController extends Controller
             'filter'      => $filter,
             'dateFrom'    => $dateFrom ?? '',
             'dateTo'      => $dateTo ?? '',
-            'enquiries'   => $leads->list($filter, $dateFrom, $dateTo),
+            'subject'     => $subject ?? '',
+            'enquiries'   => $leads->list($filter, $dateFrom, $dateTo, $subject),
             'generatedAt' => date('M j, Y \a\t g:ia'),
         ], null);
     }
@@ -88,6 +93,13 @@ class EnquiryController extends Controller
         }
         $d = \DateTime::createFromFormat('Y-m-d', $value);
         return ($d !== false && $d->format('Y-m-d') === $value) ? $value : null;
+    }
+
+    /** Validate a subject filter against the contact form's fixed options; returns null when blank or unknown. */
+    private function validSubject(string $value): ?string
+    {
+        $value = trim($value);
+        return in_array($value, Lead::SUBJECTS, true) ? $value : null;
     }
 
     /** Read one enquiry in full. */

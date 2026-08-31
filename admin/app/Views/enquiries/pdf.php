@@ -1,5 +1,5 @@
 <?php
-/** @var string $title @var string $filter @var string $dateFrom @var string $dateTo
+/** @var string $title @var string $filter @var string $dateFrom @var string $dateTo @var string $subject
  *  @var array $enquiries @var string $generatedAt
  */
 $rangeLabel = 'All time';
@@ -58,6 +58,9 @@ $filterLabel = ucfirst($filter);
   <p class="meta">
     Status filter: <strong><?= e($filterLabel) ?></strong>
     &nbsp;·&nbsp; Date range: <strong><?= e($rangeLabel) ?></strong>
+    <?php if ($subject !== ''): ?>
+      &nbsp;·&nbsp; Subject: <strong><?= e($subject) ?></strong>
+    <?php endif; ?>
     &nbsp;·&nbsp; <?= count($enquiries) ?> record<?= count($enquiries) === 1 ? '' : 's' ?>
     &nbsp;·&nbsp; Generated <?= e($generatedAt) ?>
   </p>
