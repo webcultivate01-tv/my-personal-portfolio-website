@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\ClientMeeting;
 use App\Models\ClientInvoice;
 use App\Models\ClientPayment;
+use App\Models\Bill;
 
 /**
  * Client Management — admins only.
@@ -72,6 +73,7 @@ class ClientController extends Controller
             'meetings' => (new ClientMeeting())->forClient($id),
             'invoices' => $invoices,
             'payments' => (new ClientPayment())->forClient($id),
+            'bills'    => (new Bill())->forClient($id),
             'invoiced' => $invoiced,
             'paid'     => $paid,
             'statuses' => ClientInvoice::STATUSES,

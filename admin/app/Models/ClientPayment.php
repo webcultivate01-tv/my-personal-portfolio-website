@@ -24,8 +24,8 @@ class ClientPayment extends Model
         );
     }
 
-    /** Record a payment. $invoiceId is null when it isn't tied to an invoice. */
-    public function add(int $clientId, ?int $invoiceId, float $amount, string $date, string $method, string $notes): void
+    /** Record a payment. $invoiceId is null when it isn't tied to an invoice. Returns its new id. */
+    public function add(int $clientId, ?int $invoiceId, float $amount, string $date, string $method, string $notes): int
     {
         $method = in_array($method, self::METHODS, true) ? $method : 'other';
         $this->run(
@@ -33,6 +33,7 @@ class ClientPayment extends Model
              VALUES (?, ?, ?, ?, ?, ?)',
             [$clientId, $invoiceId, $amount, $date, $method, $notes ?: null]
         );
+        return (int) $this->db->lastInsertId();
     }
 
     /** Remove a recorded payment. */

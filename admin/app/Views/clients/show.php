@@ -4,7 +4,7 @@
  * each "+ Add" button in a panel head reveals that section's form.
  *
  * @var string $csrf @var array $client @var array $meetings @var array $invoices @var array $payments
- * @var float $invoiced @var float $paid @var array $statuses @var array $methods
+ * @var array $bills @var float $invoiced @var float $paid @var array $statuses @var array $methods
  */
 $money       = static fn(float $n): string => '₹' . number_format($n, 2);
 $outstanding = $invoiced - $paid;
@@ -256,6 +256,45 @@ $openInvoices = array_filter($invoices, static fn(array $i): bool => $i['status'
                 <input type="hidden" name="id" value="<?= (int) $inv['id'] ?>">
                 <button type="submit" class="btn btn--sm btn--danger">Delete</button>
               </form>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php endif; ?>
+</section>
+
+<!-- ---------- Bills ---------- -->
+<section class="panel panel--pad">
+  <div class="panel__head panel__head--plain">
+    <h2 class="panel__title">Bills</h2>
+    <div class="panel__actions">
+      <span class="panel__count"><?= count($bills) ?> raised</span>
+      <a class="btn btn--sm btn--primary" href="<?= url('/bills') ?>?client_id=<?= (int) $client['id'] ?>">+ Raise a bill</a>
+    </div>
+  </div>
+
+  <?php if (empty($bills)): ?>
+    <p class="empty">No bills raised for this client yet. Use <strong>+ Raise a bill</strong> above the next time they pay — it produces a proper, printable receipt and records the payment here too.</p>
+  <?php else: ?>
+    <table class="table">
+      <thead>
+        <tr><th>Bill</th><th>Project</th><th class="ta-right">Amount paid</th><th class="ta-right">Balance due</th><th class="ta-right">Actions</th></tr>
+      </thead>
+      <tbody>
+        <?php foreach ($bills as $b): ?>
+          <tr>
+            <td>
+              <span class="enq-from__name"><?= e($b['bill_number']) ?></span>
+              <div class="enq-from__email"><?= e(date('M j, Y', strtotime($b['bill_date']))) ?></div>
+            </td>
+            <td class="muted"><?= $b['project_name'] ? e($b['project_name']) : '—' ?></td>
+            <td class="ta-right amount-paid"><?= e($money((float) $b['amount_paid'])) ?></td>
+            <td class="ta-right<?= $b['balance_due'] !== null && (float) $b['balance_due'] > 0 ? ' amount-due' : '' ?>">
+              <?= $b['balance_due'] !== null ? e($money((float) $b['balance_due'])) : '<span class="muted">—</span>' ?>
+            </td>
+            <td class="ta-right">
+              <a class="btn btn--sm btn--ghost" href="<?= url('/bills/view') ?>?id=<?= (int) $b['id'] ?>">View / PDF</a>
             </td>
           </tr>
         <?php endforeach; ?>

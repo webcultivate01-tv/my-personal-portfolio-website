@@ -28,6 +28,12 @@ class Client extends Model
         return $this->one('SELECT * FROM clients WHERE id = ? LIMIT 1', [$id]);
     }
 
+    /** Just id + name + company, for "pick a client" dropdowns in other modules. */
+    public function allForSelect(): array
+    {
+        return $this->all('SELECT id, name, company FROM clients ORDER BY name ASC');
+    }
+
     public function totalCount(): int
     {
         $row = $this->one('SELECT COUNT(*) AS c FROM clients');

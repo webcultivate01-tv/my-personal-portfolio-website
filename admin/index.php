@@ -42,6 +42,7 @@ use App\Controllers\EnquiryController;
 use App\Controllers\ClientController;
 use App\Controllers\ProjectController;
 use App\Controllers\HostingController;
+use App\Controllers\BillController;
 
 $router = new Router();
 
@@ -94,6 +95,12 @@ $router->post('/projects/tasks/update',    [ProjectController::class, 'updateTas
 $router->post('/projects/tasks/status',    [ProjectController::class, 'updateTaskStatus']);
 $router->post('/projects/tasks/delete',    [ProjectController::class, 'destroyTask']);
 $router->post('/projects/tasks/notes',     [ProjectController::class, 'addTaskNote']);
+
+// Billing (admin-only — every action calls requireAdmin())
+$router->get('/bills',        [BillController::class, 'index']);
+$router->get('/bills/view',   [BillController::class, 'show']);
+$router->post('/bills/create', [BillController::class, 'store']);
+$router->post('/bills/delete', [BillController::class, 'destroy']);
 
 // Hosting & Domain Management (admin-only — every action calls requireAdmin())
 $router->get('/hosting',                  [HostingController::class, 'index']);

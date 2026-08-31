@@ -580,3 +580,13 @@ a.stat.is-active{border-color:var(--brand-600);box-shadow:0 0 0 1px var(--brand-
   .renew-alert__go{margin-left:0}
   .table--hosting{display:block;overflow-x:auto;white-space:nowrap}
 }
+
+/* Billing module — line items on the "raise a bill" form */
+.bill-items{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.bill-items__row{display:grid;grid-template-columns:1fr 160px 36px;gap:8px;align-items:center}
+.bill-items__amount{text-align:right}
+.bill-items__remove{padding:0;width:36px;height:36px;font-size:18px;line-height:1;color:var(--slate-400)}
+.bill-items__remove:hover{color:var(--danger-600)}
+@media(max-width:640px){
+  .bill-items__row{grid-template-columns:1fr 110px 32px}
+}

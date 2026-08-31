@@ -6,8 +6,10 @@ Management**, the **Enquiry Management** module (contact-form messages, with
 Important / Client flags), the admin-only **Client Management** module
 (clients, meetings, invoices and payments), the **Project Management**
 module (projects, tasks, assignment and per-task comments) shared by admins
-and managers, and the admin-only **Hosting & Domain Management** module
-(hosting/domain records, renewal countdowns and renewal reminders).
+and managers, the admin-only **Hosting & Domain Management** module
+(hosting/domain records, renewal countdowns and renewal reminders), and the
+admin-only **Billing** module (printable bills raised against a client's
+project the moment they pay, bill history, and PDF download).
 
 ## Architecture (MVC)
 
@@ -18,9 +20,9 @@ admin/
 ├── config/config.php      # DB credentials, base path, session settings, helpers
 ├── app/
 │   ├── Core/              # The framework: Router, Controller, Model, View, Auth, Database
-│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project, Hosting
-│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote, HostingService, HostingRenewal
-│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, hosting, errors)
+│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project, Hosting, Bill
+│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote, HostingService, HostingRenewal, Bill
+│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, hosting, bills, errors)
 ├── assets/css/admin.css   # Indigo/slate professional theme
 ├── assets/js/hosting.js   # Hosting forms: auto renewal date, show/hide, client autofill
 └── database/
@@ -33,6 +35,7 @@ admin/
     ├── migration_client_services_cost.sql  # Only if you ran migration_clients.sql before it had services/project_cost
     ├── migration_projects.sql              # Existing install: adds the Project Management tables
     ├── migration_hosting.sql               # Existing install: adds the Hosting & Domain tables
+    ├── migration_bills.sql                 # Existing install: adds the Billing table
     └── create_admin.php                    # One-time: creates your first login, then DELETE it
 ```
 
@@ -73,6 +76,7 @@ Two roles control who can do what:
 | **Project Management** — view projects, update status/comment on own tasks | ✅ | ✅ |
 | **Project Management** — create/edit/delete projects and tasks, assign work | ✅ | ❌ |
 | **Hosting & Domain Management** (hosting/domain records, renewals) | ✅ | ❌ |
+| **Billing** (raise bills, view history, download PDF) | ✅ | ❌ |
 | Add another admin **or** manager  |  ✅   |   ❌    |
 | Change their **own** password     |  ✅   |   ❌    |
 | Have their password reset by an admin | ✅ | ✅ |
@@ -387,3 +391,55 @@ by `App\Models\HostingService` and `App\Models\HostingRenewal`.
 **Upgrading an existing install:** import `database/migration_hosting.sql`
 once in phpMyAdmin — it creates the two tables. Fresh installs get them
 automatically from `schema.sql`.
+
+## Billing (admin only)
+
+**Billing** (`/admin/bills`) is where a bill is raised **the moment a client
+pays**: pick the client, pick which of their projects the payment is for, list
+the services being billed, and record what was received. The result is a
+proper, printable bill — your business details top-right, the client's
+details on the left, the itemised services, the project's total cost, what's
+been paid to date, and the remaining balance — ready to **Print / Save as
+PDF** straight from the browser (no extra software, same approach already
+used for the Enquiries export).
+
+**Raising a bill** (**+ Raise a bill** on the list page, or **+ Raise a
+bill** from a client's own page, which preselects them):
+
+1. Choose the **client**, then the **project** — the project list narrows to
+   just that client's projects, and its budget/cost shows immediately.
+2. Add one or more **service lines** (description + amount) describing what
+   this payment covers — **+ Add another service** adds more rows.
+3. Enter the **amount paid now**, the date, and the payment method. A live
+   preview shows the running total paid and what will remain once this
+   payment is saved.
+4. **Raise bill** saves it, writes a matching entry into `client_payments` so
+   the client's totals on their own page stay correct, and opens the
+   printable bill.
+
+**Bill history** lists every bill with its number, client, project, amount
+paid and balance due, each linking to the printable view. The stat tiles
+across the top show **bills raised**, **received this month**, **total
+collected**, and **pending amount** — the sum of `project budget − paid` over
+every project that has a budget set, whether or not it's been billed yet.
+
+- **Balance due** is frozen onto each bill at the moment it's created (project
+  cost minus everything paid toward that project, including this payment), so
+  a bill stays an accurate historical document even if the project's budget
+  changes later.
+- A bill only makes sense against a **project with a budget** — without one,
+  the bill still itemises the services and the payment, but shows "—" instead
+  of a balance.
+- **Deleting a bill** also removes the `client_payments` row it created, so
+  the client's totals don't end up counting a payment whose bill no longer
+  exists.
+- Your business details shown on every bill (name, mobile, email, website)
+  are set directly in `app/Views/bills/show.php` — edit them there if they
+  ever change.
+
+Data lives in one table — `bills` — backed by `App\Models\Bill`, joining out
+to `clients` and `projects` for display.
+
+**Upgrading an existing install:** import `database/migration_bills.sql` once
+in phpMyAdmin — it creates the table. Fresh installs get it automatically
+from `schema.sql`.
