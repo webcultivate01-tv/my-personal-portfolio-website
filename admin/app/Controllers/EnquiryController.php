@@ -16,7 +16,7 @@ use App\Models\LeadNote;
 class EnquiryController extends Controller
 {
     /** Filters offered in the toolbar. */
-    private const FILTERS = ['all', 'important', 'client', 'new', 'contacted', 'quoted', 'won', 'lost'];
+    private const FILTERS = ['all', 'important', 'client', 'new', 'contacted', 'quoted', 'won', 'lost', 'spam'];
 
     /** List every enquiry (admins and managers). */
     public function index(): void
@@ -28,6 +28,9 @@ class EnquiryController extends Controller
             $filter = 'all';
         }
 
+        $dateFrom = $this->validDate($_GET['date_from'] ?? '');
+        $dateTo   = $this->validDate($_GET['date_to'] ?? '');
+
         $leads = new Lead();
 
         $this->view('enquiries/index', [
@@ -35,7 +38,9 @@ class EnquiryController extends Controller
             'active'        => 'enquiries',
             'csrf'          => $this->csrfToken(),
             'filter'        => $filter,
-            'enquiries'     => $leads->list($filter),
+            'dateFrom'      => $dateFrom ?? '',
+            'dateTo'        => $dateTo ?? '',
+            'enquiries'     => $leads->list($filter, $dateFrom, $dateTo),
             'total'         => $leads->totalCount(),
             'newCount'      => $leads->countByStatus('new'),
             'unreadCount'   => $leads->countUnread(),
@@ -43,6 +48,46 @@ class EnquiryController extends Controller
             'clientCount'   => $leads->countFlag('is_client'),
             'statuses'      => Lead::STATUSES,
         ]);
+    }
+
+    /**
+     * Printable PDF-style export of the enquiry list (admins only).
+     * Honours the same filter + date range as the list page; the browser's
+     * "Print → Save as PDF" turns it into an actual PDF download.
+     */
+    public function exportPdf(): void
+    {
+        $this->requireAdmin();
+
+        $filter = $_GET['filter'] ?? 'all';
+        if (!in_array($filter, self::FILTERS, true)) {
+            $filter = 'all';
+        }
+
+        $dateFrom = $this->validDate($_GET['date_from'] ?? '');
+        $dateTo   = $this->validDate($_GET['date_to'] ?? '');
+
+        $leads = new Lead();
+
+        $this->view('enquiries/pdf', [
+            'title'       => 'Enquiries Export',
+            'filter'      => $filter,
+            'dateFrom'    => $dateFrom ?? '',
+            'dateTo'      => $dateTo ?? '',
+            'enquiries'   => $leads->list($filter, $dateFrom, $dateTo),
+            'generatedAt' => date('M j, Y \a\t g:ia'),
+        ], null);
+    }
+
+    /** Validate a 'YYYY-MM-DD' date string; returns null when blank or malformed. */
+    private function validDate(string $value): ?string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+        $d = \DateTime::createFromFormat('Y-m-d', $value);
+        return ($d !== false && $d->format('Y-m-d') === $value) ? $value : null;
     }
 
     /** Read one enquiry in full. */

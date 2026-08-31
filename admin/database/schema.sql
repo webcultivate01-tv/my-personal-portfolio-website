@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS leads (
   phone        VARCHAR(20)   NULL,
   subject      VARCHAR(200)  NULL,
   message      TEXT          NOT NULL,
-  status       ENUM('new','contacted','quoted','won','lost') NOT NULL DEFAULT 'new',
+  status       ENUM('new','contacted','quoted','won','lost','spam') NOT NULL DEFAULT 'new',
   is_important TINYINT(1)    NOT NULL DEFAULT 0,
   is_client    TINYINT(1)    NOT NULL DEFAULT 0,
   is_read      TINYINT(1)    NOT NULL DEFAULT 0,

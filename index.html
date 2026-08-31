@@ -88,8 +88,8 @@
   <!-- ============================= NAVBAR ============================= -->
   <header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
     <nav class="max-w-7xl mx-auto px-5 sm:px-8">
-      <div class="flex items-center justify-between h-16 md:h-20">
-        <a href="index.html" class="flex items-center text-xl font-extrabold text-slate-900">
+      <div class="flex items-center justify-between flex-nowrap h-16 md:h-20">
+        <a href="index.html" class="flex items-center flex-shrink-0 text-lg sm:text-xl font-extrabold text-slate-900 whitespace-nowrap">
           <span>Tejas Mehar</span>
         </a>
 
@@ -105,7 +105,7 @@
 
         <a href="contact.html" class="hidden md:inline-flex items-center rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 transition-colors shadow-sm shadow-brand-600/30">Contact Now</a>
 
-        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
+        <button id="menu-btn" aria-label="Toggle menu" class="md:hidden flex-shrink-0 grid place-items-center w-10 h-10 rounded-lg text-slate-800 hover:bg-slate-100">
           <svg id="menu-open"  class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
           <svg id="menu-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
@@ -150,7 +150,7 @@
             Available for new Projects
           </span>
 
-          <h1 class="mt-6 text-4xl sm:text-5xl xl:text-6xl font-extrabold text-slate-900 leading-tight">
+          <h1 class="mt-6 text-2xl sm:text-4xl md:text-5xl xl:text-6xl font-extrabold text-slate-900 leading-tight whitespace-nowrap">
             Hi, I'm <span class="text-brand-600">Tejas Mehar</span>
           </h1>
 
@@ -171,17 +171,17 @@
             <span class="tech-badge">React Native</span>
           </div>
 
-          <div class="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-3">
-            <a href="projects.html" class="inline-flex items-center gap-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold px-6 py-3 transition-colors shadow-lg shadow-brand-600/25">
+          <div class="mt-8 flex flex-nowrap items-center justify-center lg:justify-start gap-2 sm:gap-3">
+            <a href="projects.html" class="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 whitespace-nowrap transition-colors shadow-lg shadow-brand-600/25">
               View My Work
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
-            <a href="contact.html" class="inline-flex items-center gap-2 rounded-full bg-white ring-1 ring-slate-200 hover:ring-brand-300 hover:text-brand-600 text-slate-700 font-semibold px-6 py-3 transition-colors">
+            <a href="contact.html" class="inline-flex items-center justify-center gap-2 rounded-full bg-white ring-1 ring-slate-200 hover:ring-brand-300 hover:text-brand-600 text-slate-700 font-semibold text-xs sm:text-base px-3.5 sm:px-6 py-2.5 sm:py-3 whitespace-nowrap transition-colors">
               Contact Me
             </a>
           </div>
 
-          <div class="mt-8 flex items-center justify-center lg:justify-start gap-3">
+          <div class="mt-8 hidden lg:flex lg:items-center lg:justify-start gap-3">
             <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
             <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
             <a href="https://www.youtube.com/@scalewithtejas" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.391.524A2.994 2.994 0 0 0 .502 6.186 31.26 31.26 0 0 0 0 12a31.26 31.26 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.107 2.117c1.886.524 9.391.524 9.391.524s7.505 0 9.391-.524a2.994 2.994 0 0 0 2.107-2.117A31.26 31.26 0 0 0 24 12a31.26 31.26 0 0 0-.502-5.814ZM9.75 15.568V8.432L15.818 12 9.75 15.568Z"/></svg></a>
@@ -199,6 +199,14 @@
             </div>
 
           </div>
+        </div>
+
+        <!-- Social icons (mobile/tablet only — placed after the profile image) -->
+        <div class="flex lg:hidden items-center justify-center gap-3 -mt-6">
+          <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
+          <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+          <a href="https://www.youtube.com/@scalewithtejas" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.391.524A2.994 2.994 0 0 0 .502 6.186 31.26 31.26 0 0 0 0 12a31.26 31.26 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.107 2.117c1.886.524 9.391.524 9.391.524s7.505 0 9.391-.524a2.994 2.994 0 0 0 2.107-2.117A31.26 31.26 0 0 0 24 12a31.26 31.26 0 0 0-.502-5.814ZM9.75 15.568V8.432L15.818 12 9.75 15.568Z"/></svg></a>
+          <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=scalewithtejas@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
         </div>
 
       </div>

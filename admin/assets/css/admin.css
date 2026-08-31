@@ -115,7 +115,7 @@ select.form__input{cursor:pointer}
 .avatar--lg{width:38px;height:38px;border-radius:11px;font-size:15px}
 
 /* ---------- Main content ---------- */
-.main{margin-left:264px;padding:34px 40px;max-width:1180px;width:100%}
+.main{margin-left:264px;padding:34px 40px;width:calc(100% - 264px)}
 .page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
 .page-head__title{margin:0;font-size:26px;font-weight:800;color:var(--slate-900)}
 .page-head__sub{margin:4px 0 0;color:var(--slate-500);font-size:14px}
@@ -136,12 +136,12 @@ select.form__input{cursor:pointer}
 .panel{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius);overflow:hidden;
   box-shadow:var(--shadow);margin-bottom:22px}
 .panel--pad{padding-bottom:22px}
-.panel__head{display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:18px 22px;border-bottom:1px solid var(--slate-100)}
+.panel__head{display:flex;align-items:center;justify-content:space-between;gap:12px;row-gap:10px;
+  flex-wrap:wrap;padding:18px 22px;border-bottom:1px solid var(--slate-100)}
 .panel__head--plain{border-bottom:1px solid var(--slate-100);margin-bottom:20px}
 .panel__title{margin:0;font-size:16px;font-weight:700;color:var(--slate-900)}
 .panel__count{font-size:12.5px;font-weight:600;color:var(--slate-500);
-  background:var(--slate-100);padding:4px 11px;border-radius:999px}
+  background:var(--slate-100);padding:4px 11px;border-radius:999px;margin-left:auto;white-space:nowrap}
 
 .empty{padding:26px 22px;color:var(--slate-500);font-size:14px;line-height:1.6}
 .empty code{background:var(--slate-100);padding:2px 6px;border-radius:6px;font-size:13px}
@@ -216,6 +216,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
 .badge--quoted{background:#eff6ff;color:#1d4ed8}
 .badge--won{background:var(--ok-50);color:var(--ok-700)}
 .badge--lost{background:var(--danger-50);color:var(--danger-700)}
+.badge--spam{background:var(--slate-100);color:var(--slate-500)}
 
 /* ---------- Enquiry Management ---------- */
 /* Filter tabs in the panel head */
@@ -265,6 +266,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
 .status-select--quoted{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
 .status-select--won{background:var(--ok-50);color:var(--ok-700);border-color:#a7f3d0}
 .status-select--lost{background:var(--danger-50);color:var(--danger-700);border-color:#fecaca}
+.status-select--spam{background:var(--slate-100);color:var(--slate-500);border-color:var(--slate-200)}
 
 /* Client + star action buttons */
 .btn--client{background:#fff;color:var(--ok-700);border-color:#a7f3d0}
@@ -397,7 +399,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .user-card{padding:0}
   .user-card__meta{display:none}
   .sidebar__user .btn--block{width:auto;margin-top:0}
-  .main{margin-left:0;padding:24px 20px}
+  .main{margin-left:0;padding:24px 20px;width:100%}
   .table{display:block;overflow-x:auto;white-space:nowrap}
 }
 

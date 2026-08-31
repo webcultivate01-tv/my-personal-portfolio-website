@@ -62,6 +62,7 @@ $router->get('/',        [DashboardController::class, 'index']);
 // Enquiry Management (admins + managers; delete is admin-only in the controller)
 $router->get('/enquiries',            [EnquiryController::class, 'index']);
 $router->get('/enquiries/view',       [EnquiryController::class, 'show']);
+$router->get('/enquiries/export',     [EnquiryController::class, 'exportPdf']);
 $router->post('/enquiries/important', [EnquiryController::class, 'toggleImportant']);
 $router->post('/enquiries/client',    [EnquiryController::class, 'toggleClient']);
 $router->post('/enquiries/status',    [EnquiryController::class, 'updateStatus']);

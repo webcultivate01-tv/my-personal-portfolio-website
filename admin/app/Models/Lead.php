@@ -13,7 +13,7 @@ use App\Core\Model;
 class Lead extends Model
 {
     /** Statuses an enquiry can move through. */
-    public const STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost'];
+    public const STATUSES = ['new', 'contacted', 'quoted', 'won', 'lost', 'spam'];
 
     // ---------- Dashboard summaries ----------
 
@@ -57,28 +57,39 @@ class Lead extends Model
     // ---------- Enquiry management ----------
 
     /**
-     * List enquiries, newest first, with an optional filter.
+     * List enquiries, newest first, with an optional filter and date range.
      * $filter: 'all' | 'important' | 'client' | one of STATUSES.
-     * Important enquiries are floated to the top of the list.
+     * $dateFrom / $dateTo: 'YYYY-MM-DD' strings, or null to leave that bound open.
      */
-    public function list(string $filter = 'all'): array
+    public function list(string $filter = 'all', ?string $dateFrom = null, ?string $dateTo = null): array
     {
-        $where  = '';
-        $params = [];
+        $conditions = [];
+        $params     = [];
 
         if ($filter === 'important') {
-            $where = 'WHERE is_important = 1';
+            $conditions[] = 'is_important = 1';
         } elseif ($filter === 'client') {
-            $where = 'WHERE is_client = 1';
+            $conditions[] = 'is_client = 1';
         } elseif (in_array($filter, self::STATUSES, true)) {
-            $where  = 'WHERE status = ?';
-            $params = [$filter];
+            $conditions[] = 'status = ?';
+            $params[]     = $filter;
         }
+
+        if ($dateFrom !== null && $dateFrom !== '') {
+            $conditions[] = 'created_at >= ?';
+            $params[]     = $dateFrom . ' 00:00:00';
+        }
+        if ($dateTo !== null && $dateTo !== '') {
+            $conditions[] = 'created_at <= ?';
+            $params[]     = $dateTo . ' 23:59:59';
+        }
+
+        $where = $conditions ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
         return $this->all(
             "SELECT id, name, email, phone, subject, message, status, is_important, is_client, is_read, notes, created_at
              FROM leads $where
-             ORDER BY is_important DESC, created_at DESC",
+             ORDER BY created_at DESC",
             $params
         );
     }

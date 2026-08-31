@@ -2,12 +2,34 @@
 /**
  * @var string $csrf @var string $filter @var array $enquiries
  * @var int $total @var int $newCount @var int $unreadCount @var int $importantCount @var int $clientCount
- * @var array $statuses
+ * @var array $statuses @var string $dateFrom @var string $dateTo
  */
 $isAdmin = \App\Core\Auth::isAdmin();
 
-/** Build a filter-tab URL. */
-$tab = static fn(string $key): string => url('/enquiries') . ($key === 'all' ? '' : '?filter=' . $key);
+/** Build a filter-tab URL, preserving the current date range. */
+$tab = static function (string $key) use ($dateFrom, $dateTo): string {
+    $params = [];
+    if ($key !== 'all') {
+        $params['filter'] = $key;
+    }
+    if ($dateFrom !== '') {
+        $params['date_from'] = $dateFrom;
+    }
+    if ($dateTo !== '') {
+        $params['date_to'] = $dateTo;
+    }
+    return url('/enquiries') . ($params ? '?' . http_build_query($params) : '');
+};
+
+/** Export PDF URL, honouring the current filter + date range. */
+$exportUrl = url('/enquiries/export') . '?' . http_build_query(array_filter([
+    'filter'    => $filter !== 'all' ? $filter : null,
+    'date_from' => $dateFrom !== '' ? $dateFrom : null,
+    'date_to'   => $dateTo !== '' ? $dateTo : null,
+]));
+
+/** Current status tab with the date range stripped, for "Clear dates". */
+$clearDatesUrl = url('/enquiries') . ($filter !== 'all' ? '?filter=' . $filter : '');
 
 /** Filter tabs: key => label. */
 $tabs = [
@@ -19,6 +41,7 @@ $tabs = [
     'quoted'    => 'Quoted',
     'won'       => 'Won',
     'lost'      => 'Lost',
+    'spam'      => 'Spam',
 ];
 ?>
 <header class="page-head">
@@ -26,6 +49,9 @@ $tabs = [
     <h1 class="page-head__title">Enquiries</h1>
     <p class="page-head__sub">Messages sent through your website contact form. Star the ones that matter and flag real clients in green.</p>
   </div>
+  <?php if ($isAdmin): ?>
+    <a class="btn btn--ghost btn--sm" href="<?= e($exportUrl) ?>" target="_blank" rel="noopener">⬇ Export PDF</a>
+  <?php endif; ?>
 </header>
 
 <section class="stat-grid">
@@ -49,10 +75,29 @@ $tabs = [
     <span class="panel__count"><?= count($enquiries) ?> shown</span>
   </div>
 
+  <form class="filter-bar" method="get" action="<?= url('/enquiries') ?>">
+    <input type="hidden" name="filter" value="<?= e($filter) ?>">
+    <label class="filter-bar__date">From
+      <input class="form__input" type="date" name="date_from" value="<?= e($dateFrom) ?>">
+    </label>
+    <label class="filter-bar__date">to
+      <input class="form__input" type="date" name="date_to" value="<?= e($dateTo) ?>">
+    </label>
+    <button type="submit" class="btn btn--sm btn--primary">Apply</button>
+    <?php if ($dateFrom !== '' || $dateTo !== ''): ?>
+      <a class="btn btn--sm btn--ghost" href="<?= e($clearDatesUrl) ?>">Clear dates</a>
+    <?php endif; ?>
+  </form>
+
   <?php if (empty($enquiries)): ?>
     <p class="empty">
-      No enquiries here yet. When someone submits the contact form on your site,
-      their message will appear in this list.
+      <?php if ($filter !== 'all' || $dateFrom !== '' || $dateTo !== ''): ?>
+        Nothing matches that filter<?= ($dateFrom !== '' || $dateTo !== '') ? ' and date range' : '' ?>.
+        <a href="<?= url('/enquiries') ?>">Clear it</a> to see every enquiry.
+      <?php else: ?>
+        No enquiries here yet. When someone submits the contact form on your site,
+        their message will appear in this list.
+      <?php endif; ?>
     </p>
   <?php else: ?>
     <table class="table table--enquiries">
