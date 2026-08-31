@@ -20,11 +20,12 @@ admin/
 ├── config/config.php      # DB credentials, base path, session settings, helpers
 ├── app/
 │   ├── Core/              # The framework: Router, Controller, Model, View, Auth, Database
-│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project, Hosting, Bill
-│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote, HostingService, HostingRenewal, Bill
-│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, hosting, bills, errors)
+│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project, Hosting, Bill, MonthlyClient, Report
+│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote, HostingService, HostingRenewal, Bill, MonthlyClient, MonthlyInvoice, MonthlyPayment, Report
+│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, hosting, bills, monthly, reports, errors)
 ├── assets/css/admin.css   # Indigo/slate professional theme
 ├── assets/js/hosting.js   # Hosting forms: auto renewal date, show/hide, client autofill
+├── assets/js/monthly.js   # Monthly Clients forms: show/hide, due date, invoice + payment previews
 └── database/
     ├── schema.sql                          # Fresh install: creates every table (roles + enquiries + onboarding + clients + projects + hosting)
     ├── migration_roles.sql                 # Existing install: adds the role column
@@ -36,6 +37,7 @@ admin/
     ├── migration_projects.sql              # Existing install: adds the Project Management tables
     ├── migration_hosting.sql               # Existing install: adds the Hosting & Domain tables
     ├── migration_bills.sql                 # Existing install: adds the Billing table
+    ├── migration_monthly_clients.sql       # Existing install: adds the Monthly Clients tables
     └── create_admin.php                    # One-time: creates your first login, then DELETE it
 ```
 
@@ -443,3 +445,134 @@ to `clients` and `projects` for display.
 **Upgrading an existing install:** import `database/migration_bills.sql` once
 in phpMyAdmin — it creates the table. Fresh installs get it automatically
 from `schema.sql`.
+
+## Monthly Clients (admin only)
+
+**Monthly Clients** (`/admin/monthly-clients`) is one place for every client on
+a **recurring retainer**: their contract, the invoice raised for each billing
+cycle, every payment taken against those invoices, the receipt each payment
+produces, and what's still due or overdue. It's separate from Client
+Management — that module tracks one-off project work; this one tracks money
+that repeats every month.
+
+### The page
+
+Top to bottom, in the order things need acting on:
+
+1. **Summary tiles** — monthly clients, active, monthly recurring amount, due
+   this month, paid this month, outstanding, overdue.
+2. **Billing due to be raised** — active clients whose next billing period has
+   started but hasn't been invoiced yet, each with a one-click way in.
+3. **Due & overdue** — unpaid invoices sliced into *overdue*, *due today*,
+   *due this week*, *upcoming*, *partially paid* and *paid*, with a count on
+   each tab. Overdue rows show how many days late they are and how much is left.
+4. **Recent payments** and **recent invoices** — the trail of what just happened.
+5. **All monthly clients** — search (client, company, email, service, or an
+   invoice number) plus filter tabs for Active, Payment Due, Paid, Partially
+   Paid, Overdue, Paused and Cancelled.
+
+A client's own page adds their **financial summary** (total billed, paid,
+outstanding, overdue, number of invoices and payments, next payment amount and
+date), the forms that raise invoices and record payments, the subscription
+controls, their full details and contract, and the complete billing history.
+
+### How status works
+
+Nothing that can be worked out is stored. Only the lifecycle you actually
+choose lives in the database — a client is `active`, `paused` or `cancelled`,
+and an invoice is `draft`, `sent` or `cancelled`. Everything else is derived
+each time a page is drawn, so nothing can go stale:
+
+**An invoice** — from its payments and its due date:
+
+| Situation | Reads as |
+|---|---|
+| Cancelled by hand | Cancelled |
+| Balance reaches zero | Paid |
+| Still a draft | Draft |
+| Past its due date, still owing | Overdue |
+| Part paid, not yet due | Partially Paid |
+| Sent, nothing paid, not yet due | Sent |
+
+An invoice that's *both* part paid and past due reads as **Overdue** (the more
+urgent of the two) but still answers the **Partially Paid** filter.
+
+**A client** — from their unpaid invoices:
+
+| Situation | Reads as |
+|---|---|
+| Cancelled | Cancelled |
+| Paused | Paused |
+| Any invoice past its due date | Overdue |
+| Anything still owed | Payment Due |
+| Otherwise | Active |
+
+### Billing cycles
+
+**Monthly amount** is the rate; **billing frequency** (monthly, quarterly,
+half-yearly, yearly) is how often an invoice is actually raised. An invoice
+covers the rate × the months in the cycle — a ₹10,000/month client billed
+quarterly is invoiced ₹30,000 every three months.
+
+**Next billing date** is the first day of the period the next invoice will
+cover. It moves forward one cycle each time you generate an invoice, and a
+back-dated invoice never rewinds it. Month-ends are clamped, so a cycle
+starting 31 Jan lands on 28 Feb rather than spilling into March.
+
+**Payment terms** (due on receipt, net 7/15/30/45/60) set each invoice's due
+date, which is what drives everything in the due/overdue panel.
+
+### Invoices, payments and receipts
+
+**Generate invoice** raises the invoice for one billing period, pre-filled
+from the client's rate, standing discount and tax — all editable for that one
+cycle. Everything is frozen onto the invoice at that moment, so it stays a
+correct historical document even after the client's rate changes.
+
+**Record payment** takes a payment against an invoice, in full or in parts.
+The amount is capped at what's still outstanding, the balance and the invoice
+status update themselves, and a numbered **receipt** is created immediately —
+showing the invoice, the amount paid, the method, the reference number, and
+the balance that was left. Both the invoice and the receipt are standalone,
+print-ready pages: **Print / Save as PDF** uses the browser's own print
+dialog, the same approach as the Billing module.
+
+Numbering runs per year, from the highest existing sequence (never a row
+count), so a number is never reused: invoices `MC-2026-001`, receipts
+`RCP-2026-001`.
+
+### Pause, resume and cancel
+
+**Pause** stops future billing with a pause date, a reason and an optional
+planned resume date. **Resume** puts them back on, picking up where they left
+off or from a date you choose — move it forward to skip the paused periods.
+Every pause is kept as history.
+
+**Cancel** records a cancellation date, reason and notes, and stops all future
+billing. **Nothing is deleted**: every invoice, payment, receipt and
+outstanding balance stays exactly as it was. A cancelled client can be
+reactivated later.
+
+### The rules it enforces
+
+- Two invoices can never cover the same client and the same billing period —
+  checked before the insert and backed by a unique key on the table.
+- A payment can never exceed what's still outstanding, so a balance can't go
+  negative.
+- A paused or cancelled client gets no new invoices at all.
+- Paid, partially paid and overdue can't be set by hand — they follow from the
+  payments and the due date.
+- An invoice with payments against it can't be cancelled.
+- Cancelling or pausing never removes an invoice, a payment or a receipt.
+
+Data lives in four tables — `monthly_clients`, `monthly_invoices`,
+`monthly_payments` and `monthly_client_pauses` — backed by
+`App\Models\MonthlyClient`, `MonthlyInvoice` and `MonthlyPayment`.
+
+Your business details shown on every invoice and receipt (name, mobile, email,
+website) are set in `app/Views/monthly/invoice.php` and
+`app/Views/monthly/receipt.php` — edit them there if they ever change.
+
+**Upgrading an existing install:** import
+`database/migration_monthly_clients.sql` once in phpMyAdmin — it creates the
+four tables. Fresh installs get them automatically from `schema.sql`.

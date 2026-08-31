@@ -43,6 +43,7 @@ use App\Controllers\ClientController;
 use App\Controllers\ProjectController;
 use App\Controllers\HostingController;
 use App\Controllers\BillController;
+use App\Controllers\MonthlyClientController;
 use App\Controllers\ReportController;
 
 $router = new Router();
@@ -102,6 +103,21 @@ $router->get('/bills',        [BillController::class, 'index']);
 $router->get('/bills/view',   [BillController::class, 'show']);
 $router->post('/bills/create', [BillController::class, 'store']);
 $router->post('/bills/delete', [BillController::class, 'destroy']);
+
+// Monthly Clients — recurring retainer billing (admin-only — every action calls requireAdmin())
+$router->get('/monthly-clients',                  [MonthlyClientController::class, 'index']);
+$router->get('/monthly-clients/view',             [MonthlyClientController::class, 'show']);
+$router->get('/monthly-clients/invoice',          [MonthlyClientController::class, 'invoice']);
+$router->get('/monthly-clients/receipt',          [MonthlyClientController::class, 'receipt']);
+$router->post('/monthly-clients/create',          [MonthlyClientController::class, 'store']);
+$router->post('/monthly-clients/update',          [MonthlyClientController::class, 'update']);
+$router->post('/monthly-clients/pause',           [MonthlyClientController::class, 'pause']);
+$router->post('/monthly-clients/resume',          [MonthlyClientController::class, 'resume']);
+$router->post('/monthly-clients/cancel',          [MonthlyClientController::class, 'cancel']);
+$router->post('/monthly-clients/reactivate',      [MonthlyClientController::class, 'reactivate']);
+$router->post('/monthly-clients/invoices/create', [MonthlyClientController::class, 'storeInvoice']);
+$router->post('/monthly-clients/invoices/status', [MonthlyClientController::class, 'updateInvoiceStatus']);
+$router->post('/monthly-clients/payments/create', [MonthlyClientController::class, 'storePayment']);
 
 // Reports (admins + managers; each report re-checks the permission of the module it draws from)
 $router->get('/reports',          [ReportController::class, 'index']);
