@@ -85,7 +85,11 @@ select.form__input{cursor:pointer}
   background:#fff;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;
   border-right:1px solid var(--line)}
 .sidebar::-webkit-scrollbar{display:none}
-.sidebar__top{display:flex;flex-direction:column;min-height:0}
+/* flex-shrink:0 keeps the nav at its natural height once it outgrows the
+   viewport. Without it this block is squashed to fit the sidebar's 100vh, its
+   items spill out of their own box, and the user card below gets laid out on
+   top of the last few nav links — hiding them behind the sign-out area. */
+.sidebar__top{display:flex;flex-direction:column;flex-shrink:0}
 
 .sidebar__brand{display:flex;align-items:center;gap:12px;padding:6px 8px 20px;margin-bottom:6px;
   border-bottom:1px solid var(--line)}
@@ -117,7 +121,7 @@ select.form__input{cursor:pointer}
 .nav-dot{margin-left:auto;width:9px;height:9px;flex-shrink:0;border-radius:50%;
   background:var(--danger-500);box-shadow:0 0 0 3px var(--danger-100)}
 
-.sidebar__user{padding-top:16px;border-top:1px solid var(--line)}
+.sidebar__user{padding-top:16px;border-top:1px solid var(--line);flex-shrink:0;margin-top:24px}
 .user-card{display:flex;align-items:center;gap:11px;padding:6px 6px 12px}
 .user-card__meta{display:flex;flex-direction:column;gap:4px;min-width:0}
 .user-card__name{font-size:13.5px;font-weight:600;color:var(--slate-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -590,3 +594,13 @@ a.stat.is-active{border-color:var(--brand-600);box-shadow:0 0 0 1px var(--brand-
 @media(max-width:640px){
   .bill-items__row{grid-template-columns:1fr 110px 32px}
 }
+
+/* Reports module — the "pick a report" cards above the filter panel */
+.report-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:26px}
+.report-card{display:flex;flex-direction:column;gap:6px;background:#fff;border:1px solid var(--slate-200);
+  border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);transition:.15s}
+.report-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:var(--brand-200)}
+.report-card.is-active{border-color:var(--brand-500);box-shadow:0 0 0 1px var(--brand-500),var(--shadow)}
+.report-card__title{font-size:14.5px;font-weight:700;color:var(--slate-900)}
+.report-card.is-active .report-card__title{color:var(--brand-700)}
+.report-card__blurb{font-size:12.5px;color:var(--slate-500);line-height:1.55}

@@ -43,6 +43,7 @@ use App\Controllers\ClientController;
 use App\Controllers\ProjectController;
 use App\Controllers\HostingController;
 use App\Controllers\BillController;
+use App\Controllers\ReportController;
 
 $router = new Router();
 
@@ -101,6 +102,10 @@ $router->get('/bills',        [BillController::class, 'index']);
 $router->get('/bills/view',   [BillController::class, 'show']);
 $router->post('/bills/create', [BillController::class, 'store']);
 $router->post('/bills/delete', [BillController::class, 'destroy']);
+
+// Reports (admins + managers; each report re-checks the permission of the module it draws from)
+$router->get('/reports',          [ReportController::class, 'index']);
+$router->get('/reports/generate', [ReportController::class, 'generate']);
 
 // Hosting & Domain Management (admin-only — every action calls requireAdmin())
 $router->get('/hosting',                  [HostingController::class, 'index']);
