@@ -23,8 +23,8 @@ if (file_exists($localDbConfig)) {
 } else {
     define('DB_HOST', 'localhost');
     define('DB_PORT', '3306');
-    define('DB_NAME', 'REPLACE_WITH_YOUR_DB_NAME');   // <-- from hPanel Databases
-    define('DB_USER', 'REPLACE_WITH_YOUR_DB_USER');   // <-- from hPanel Databases
+    define('DB_NAME', 'u284906959_scalewithtejas');   // <-- from hPanel Databases
+    define('DB_USER', 'u284906959_scalewithtejas');   // <-- from hPanel Databases
     define('DB_PASS', 'REPLACE_WITH_YOUR_DB_PASSWORD'); // <-- from hPanel Databases
     define('DB_CHARSET', 'utf8mb4');
 }

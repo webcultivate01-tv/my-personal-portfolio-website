@@ -120,6 +120,12 @@ li:hover > .timeline-dot { transform:scale(1.08); box-shadow:0 0 0 5px var(--bra
 .contact-chip:hover { border-color:var(--brand-300); color:var(--brand-600); }
 .contact-chip svg { color:var(--brand-500); }
 
+/* ---------- Trusted globally badge ---------- */
+.trust-badge { display:inline-flex; align-items:center; gap:.5rem; border-radius:9999px; background:var(--brand-50); color:var(--brand-700); font-size:.75rem; font-weight:600; padding:.375rem 1rem; box-shadow:0 0 0 1px var(--brand-100); }
+@media (min-width:640px) { .trust-badge { font-size:.875rem; } }
+.trust-badge-dot { width:.5rem; height:.5rem; border-radius:9999px; background:#10b981; animation:trustPulse 2s cubic-bezier(0,0,.2,1) infinite; }
+@keyframes trustPulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+
 /* ---------- Country flag badges (Trusted globally) ---------- */
 .flag-badge { display:flex; flex-direction:column; align-items:center; gap:.35rem; cursor:default; flex-shrink:0; }
 .flag-circle { display:grid; place-items:center; overflow:hidden; width:2.75rem; height:2.75rem; border-radius:9999px; background:var(--slate-100); border:2px solid #fff; box-shadow:0 0 0 1px var(--slate-100), var(--shadow-xl); transition:transform .35s ease, box-shadow .35s ease; }
