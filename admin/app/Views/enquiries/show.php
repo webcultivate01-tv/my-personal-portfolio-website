@@ -13,6 +13,9 @@ $subject     = ($enquiry['subject'] !== '' && $enquiry['subject'] !== null) ? $e
     </h1>
     <p class="page-head__sub">
       <a href="mailto:<?= e($enquiry['email']) ?>"><?= e($enquiry['email']) ?></a>
+      <?php if (!empty($enquiry['phone'])): ?>
+        &nbsp;·&nbsp; <a href="tel:<?= e($enquiry['phone']) ?>"><?= e($enquiry['phone']) ?></a>
+      <?php endif; ?>
       &nbsp;·&nbsp; <?= e(date('M j, Y \a\t g:ia', strtotime($enquiry['created_at']))) ?>
     </p>
   </div>

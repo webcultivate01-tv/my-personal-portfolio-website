@@ -123,9 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Fallback used when the backend isn't reachable (e.g. previewed as a
     // static file with no PHP): open the visitor's mail client instead.
-    const mailtoFallback = (name, email, subject, message) => {
+    const mailtoFallback = (name, email, phone, subject, message) => {
       const s = encodeURIComponent(subject || `Message from ${name}`);
-      const b = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+      const b = encodeURIComponent(`${message}\n\n— ${name} (${email}, ${phone})`);
       window.location.href = `mailto:scalewithtejas@gmail.com?subject=${s}&body=${b}`;
       showStatus('Opening your email client so you can send the message…', true);
     };
@@ -135,16 +135,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const name    = form.name.value.trim();
       const email   = form.email.value.trim();
+      const phone   = form.phone.value.trim();
       const subject = form.subject.value.trim();
       const message = form.message.value.trim();
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      const phoneOk = /^[0-9+\-\s()]{7,20}$/.test(phone);
 
-      if (!name || !email || !message) {
-        showStatus('Please fill in your name, email, and message.', false);
+      if (!name || !email || !phone || !message) {
+        showStatus('Please fill in your name, email, mobile number, and message.', false);
         return;
       }
       if (!emailOk) {
         showStatus('Please enter a valid email address.', false);
+        return;
+      }
+      if (!phoneOk) {
+        showStatus('Please enter a valid mobile number.', false);
         return;
       }
 
@@ -163,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         // Network / no-PHP: fall back to the mail client so the message isn't lost.
-        mailtoFallback(name, email, subject, message);
+        mailtoFallback(name, email, phone, subject, message);
       } finally {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.classList.remove('opacity-70'); }
       }

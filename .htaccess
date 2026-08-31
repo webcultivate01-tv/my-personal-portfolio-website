@@ -5,6 +5,9 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+# Custom 404 page
+ErrorDocument 404 /404.html
+
 # Never serve dotfiles (.env, .git, .htaccess itself, etc.)
 <FilesMatch "^\.">
     Require all denied

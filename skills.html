@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Technical skills and tech stack of Tejas Mehar." />
-  <title>Tejas Mehar — Skills</title>
+  <meta name="description" content="The MERN stack, cloud tools and computer-science fundamentals Tejas Mehar uses to design, build and ship production-ready web applications." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://tejasmehar.in/skills.html" />
+  <title>Skills &amp; Tech Stack | Tejas Mehar</title>
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tejas Mehar — Portfolio" />
+  <meta property="og:url" content="https://tejasmehar.in/skills.html" />
+  <meta property="og:title" content="Skills &amp; Tech Stack | Tejas Mehar" />
+  <meta property="og:description" content="The MERN stack, cloud tools and computer-science fundamentals Tejas Mehar uses to design, build and ship production-ready web applications." />
+  <meta property="og:image" content="https://tejasmehar.in/public/tejas.jpeg" />
+  <meta property="og:locale" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Skills &amp; Tech Stack | Tejas Mehar" />
+  <meta name="twitter:description" content="The MERN stack, cloud tools and computer-science fundamentals Tejas Mehar uses to design, build and ship production-ready web applications." />
+  <meta name="twitter:image" content="https://tejasmehar.in/public/tejas.jpeg" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -21,6 +35,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
   <link rel="stylesheet" href="css/style.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://tejasmehar.in/skills.html",
+        "url": "https://tejasmehar.in/skills.html",
+        "name": "Skills &amp; Tech Stack | Tejas Mehar",
+        "isPartOf": { "@id": "https://tejasmehar.in/#website" },
+        "about": { "@id": "https://tejasmehar.in/#person" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tejasmehar.in/" },
+          { "@type": "ListItem", "position": 2, "name": "Skills", "item": "https://tejasmehar.in/skills.html" }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body class="bg-white text-slate-700 font-sans antialiased">
@@ -72,78 +109,100 @@
       </ul>
     </aside>
 
-  <section id="skills" class="pt-28 md:pt-36 pb-20 md:pb-28">
-    <div class="max-w-7xl mx-auto px-5 sm:px-8">
+  <main id="main-content">
+  <section id="skills" class="relative overflow-hidden pt-28 md:pt-36 pb-20 md:pb-28">
+    <div class="pointer-events-none absolute -top-24 -right-24 w-96 h-96 bg-brand-100/60 rounded-full blur-3xl"></div>
+    <div class="pointer-events-none absolute top-1/2 -left-24 w-80 h-80 bg-brand-50 rounded-full blur-3xl"></div>
+
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8">
       <div class="text-center max-w-2xl mx-auto" data-reveal>
         <p class="section-eyebrow">My toolkit</p>
-        <h2 class="section-title">Skills &amp; Technologies</h2>
+        <h1 class="section-title">Skills &amp; Technologies</h1>
         <p class="mt-4 text-slate-600">The full-stack MERN toolkit and computer-science foundation I use to design, build, and ship production-ready web applications.</p>
       </div>
 
-      <!-- Categorised tech stack — 2 categories per row, items on the page background -->
-      <div class="mt-14 grid md:grid-cols-2 gap-x-10 gap-y-12">
+      <!-- Categorised tech stack — elevated cards, 3 per row on large screens -->
+      <div class="mt-14 grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
 
-        <div data-reveal>
+        <div class="cat-card" data-reveal>
           <div class="cat-head">
             <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-            <h3 class="cat-title">Languages</h3>
+            <h2 class="cat-title">Languages</h2>
+            <span class="cat-count">3</span>
           </div>
-          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-3 gap-3">
             <div class="tech-item"><i class="devicon-java-plain colored"></i><span>Java</span></div>
             <div class="tech-item"><i class="devicon-javascript-plain colored"></i><span>JavaScript</span></div>
+            <div class="tech-item"><i class="devicon-python-plain colored"></i><span>Python</span></div>
+          </div>
+        </div>
+
+        <div class="cat-card" data-reveal>
+          <div class="cat-head">
+            <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
+            <h2 class="cat-title">Frontend</h2>
+            <span class="cat-count">6</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="tech-item"><i class="devicon-react-original colored"></i><span>React.js</span></div>
+            <div class="tech-item"><i class="devicon-nextjs-original"></i><span>Next.js</span></div>
+            <div class="tech-item"><i class="devicon-tailwindcss-original colored"></i><span>Tailwind</span></div>
+            <div class="tech-item"><i class="devicon-bootstrap-plain colored"></i><span>Bootstrap</span></div>
             <div class="tech-item"><i class="devicon-html5-plain colored"></i><span>HTML5</span></div>
             <div class="tech-item"><i class="devicon-css3-plain colored"></i><span>CSS3</span></div>
           </div>
         </div>
 
-        <div data-reveal>
-          <div class="cat-head">
-            <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></span>
-            <h3 class="cat-title">Frontend</h3>
-          </div>
-          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-            <div class="tech-item"><i class="devicon-react-original colored"></i><span>React.js</span></div>
-            <div class="tech-item"><i class="devicon-tailwindcss-original colored"></i><span>Tailwind</span></div>
-            <div class="tech-item"><i class="devicon-bootstrap-plain colored"></i><span>Bootstrap</span></div>
-            <div class="tech-item"><i class="devicon-html5-plain colored"></i><span>HTML5</span></div>
-          </div>
-        </div>
-
-        <div data-reveal>
+        <div class="cat-card" data-reveal>
           <div class="cat-head">
             <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-6-6-6M12 19h8"/></svg></span>
-            <h3 class="cat-title">Backend</h3>
+            <h2 class="cat-title">Backend</h2>
+            <span class="cat-count">3</span>
           </div>
-          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-3 gap-3">
             <div class="tech-item"><i class="devicon-nodejs-plain colored"></i><span>Node.js</span></div>
             <div class="tech-item"><i class="devicon-express-original colored"></i><span>Express.js</span></div>
             <div class="tech-item"><span class="tech-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span>REST APIs</span></div>
           </div>
         </div>
 
-        <div data-reveal>
+        <div class="cat-card" data-reveal>
           <div class="cat-head">
             <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg></span>
-            <h3 class="cat-title">Databases</h3>
+            <h2 class="cat-title">Databases</h2>
+            <span class="cat-count">2</span>
           </div>
-          <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-3 gap-3">
             <div class="tech-item"><i class="devicon-mongodb-plain colored"></i><span>MongoDB</span></div>
             <div class="tech-item"><i class="devicon-mysql-plain colored"></i><span>MySQL</span></div>
           </div>
         </div>
 
-        <div class="md:col-span-2" data-reveal>
+        <div class="cat-card" data-reveal>
+          <div class="cat-head">
+            <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4M2 11h20"/></svg></span>
+            <h2 class="cat-title">Deployment</h2>
+            <span class="cat-count">4</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="tech-item"><i class="devicon-docker-plain colored"></i><span>Docker</span></div>
+            <div class="tech-item"><span class="tech-glyph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span><span>CI/CD</span></div>
+            <div class="tech-item"><i class="devicon-kubernetes-plain colored"></i><span>Kubernetes</span></div>
+            <div class="tech-item"><i class="devicon-amazonwebservices-plain-wordmark colored"></i><span>AWS</span></div>
+          </div>
+        </div>
+
+        <div class="cat-card" data-reveal>
           <div class="cat-head">
             <span class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-            <h3 class="cat-title">Tools &amp; Platforms</h3>
+            <h2 class="cat-title">Tools &amp; Platforms</h2>
+            <span class="cat-count">7</span>
           </div>
-          <div class="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-3">
+          <div class="grid grid-cols-4 gap-3">
             <div class="tech-item"><i class="devicon-git-plain colored"></i><span>Git</span></div>
             <div class="tech-item"><i class="devicon-github-original"></i><span>GitHub</span></div>
             <div class="tech-item"><i class="devicon-postman-plain colored"></i><span>Postman</span></div>
-            <div class="tech-item"><i class="devicon-amazonwebservices-plain-wordmark colored"></i><span>AWS</span></div>
             <div class="tech-item"><i class="devicon-vscode-plain colored"></i><span>VS Code</span></div>
-            <div class="tech-item"><i class="devicon-docker-plain colored"></i><span>Docker</span></div>
             <div class="tech-item"><i class="devicon-figma-plain colored"></i><span>Figma</span></div>
             <div class="tech-item"><i class="devicon-npm-original-wordmark colored"></i><span>npm</span></div>
             <div class="tech-item"><i class="devicon-vercel-original"></i><span>Vercel</span></div>
@@ -153,8 +212,8 @@
       </div>
 
       <!-- Computer-science fundamentals -->
-      <div class="mt-16 text-center" data-reveal>
-        <h3 class="text-lg font-bold text-slate-900">Computer Science Fundamentals</h3>
+      <div class="mt-10 rounded-3xl bg-slate-50 border border-slate-100 px-6 py-10 sm:px-10 text-center" data-reveal>
+        <h2 class="text-lg font-bold text-slate-900">Computer Science Fundamentals</h2>
         <p class="mt-2 text-sm text-slate-600">The core concepts behind every application I build.</p>
         <div class="mt-6 flex flex-wrap justify-center gap-3">
           <span class="concept-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Data Structures &amp; Algorithms</span>
@@ -167,6 +226,7 @@
 
     </div>
   </section>
+  </main>
 
   <footer class="border-t border-slate-100 bg-white">
     <div class="max-w-7xl mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -174,6 +234,7 @@
       <div class="flex items-center gap-2.5">
         <a href="https://www.instagram.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Instagram" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9Zm9.75 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg></a> <a href="https://www.facebook.com/scalewithtejas/" target="_blank" rel="noopener" aria-label="Facebook" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07Z"/></svg></a>
         <a href="https://www.linkedin.com/in/tejasmehar/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33 0-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.55V9h3.57v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"/></svg></a>
+        <a href="https://www.youtube.com/@scalewithtejas" target="_blank" rel="noopener" aria-label="YouTube" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.391.524A2.994 2.994 0 0 0 .502 6.186 31.26 31.26 0 0 0 0 12a31.26 31.26 0 0 0 .502 5.814 2.994 2.994 0 0 0 2.107 2.117c1.886.524 9.391.524 9.391.524s7.505 0 9.391-.524a2.994 2.994 0 0 0 2.107-2.117A31.26 31.26 0 0 0 24 12a31.26 31.26 0 0 0-.502-5.814ZM9.75 15.568V8.432L15.818 12 9.75 15.568Z"/></svg></a>
         <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=scalewithtejas@gmail.com" target="_blank" rel="noopener" aria-label="Email" class="social-icon w-9 h-9"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2Z"/></svg></a>
       </div>
     </div>

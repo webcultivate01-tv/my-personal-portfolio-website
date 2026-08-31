@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS leads (
   id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name         VARCHAR(120)  NOT NULL,
   email        VARCHAR(190)  NOT NULL,
+  phone        VARCHAR(20)   NULL,
   subject      VARCHAR(200)  NULL,
   message      TEXT          NOT NULL,
   status       ENUM('new','contacted','quoted','won','lost') NOT NULL DEFAULT 'new',

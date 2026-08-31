@@ -50,23 +50,28 @@ if (trim((string) ($_POST['company'] ?? '')) !== '') {
 
 $name    = trim((string) ($_POST['name'] ?? ''));
 $email   = trim((string) ($_POST['email'] ?? ''));
+$phone   = trim((string) ($_POST['phone'] ?? ''));
 $subject = trim((string) ($_POST['subject'] ?? ''));
 $message = trim((string) ($_POST['message'] ?? ''));
 
-if ($name === '' || $email === '' || $message === '') {
-    respond(false, 'Please fill in your name, email, and message.', 422);
+if ($name === '' || $email === '' || $phone === '' || $message === '') {
+    respond(false, 'Please fill in your name, email, mobile number, and message.', 422);
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     respond(false, 'Please enter a valid email address.', 422);
+}
+if (!preg_match('/^[0-9+\-\s()]{7,20}$/', $phone)) {
+    respond(false, 'Please enter a valid mobile number.', 422);
 }
 
 // Trim to the column limits so nothing is silently truncated by MySQL.
 $name    = mb_substr($name, 0, 120);
 $email   = mb_substr($email, 0, 190);
+$phone   = mb_substr($phone, 0, 20);
 $subject = mb_substr($subject, 0, 200);
 
 try {
-    (new Lead())->create($name, $email, $subject, $message);
+    (new Lead())->create($name, $email, $phone, $subject, $message);
 } catch (\Throwable $e) {
     respond(false, DEBUG ? $e->getMessage() : 'Something went wrong. Please email me directly.', 500);
 }

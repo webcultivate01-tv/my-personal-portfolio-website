@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /public/meetings/
+
+Sitemap: https://tejasmehar.in/sitemap.xml

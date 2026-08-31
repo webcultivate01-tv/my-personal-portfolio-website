@@ -42,7 +42,7 @@ class Lead extends Model
         // LIMIT can't be a bound param in MySQL prepared statements, so cast to int.
         $limit = max(1, min(50, $limit));
         return $this->all(
-            "SELECT id, name, email, subject, status, is_important, is_client, is_read, created_at
+            "SELECT id, name, email, phone, subject, status, is_important, is_client, is_read, created_at
              FROM leads ORDER BY created_at DESC LIMIT $limit"
         );
     }
@@ -76,7 +76,7 @@ class Lead extends Model
         }
 
         return $this->all(
-            "SELECT id, name, email, subject, message, status, is_important, is_client, is_read, notes, created_at
+            "SELECT id, name, email, phone, subject, message, status, is_important, is_client, is_read, notes, created_at
              FROM leads $where
              ORDER BY is_important DESC, created_at DESC",
             $params
@@ -87,7 +87,7 @@ class Lead extends Model
     public function find(int $id): ?array
     {
         return $this->one(
-            'SELECT id, name, email, subject, message, status, is_important, is_client, is_read, notes, created_at
+            'SELECT id, name, email, phone, subject, message, status, is_important, is_client, is_read, notes, created_at
              FROM leads WHERE id = ? LIMIT 1',
             [$id]
         );
@@ -127,11 +127,11 @@ class Lead extends Model
     // ---------- Public capture ----------
 
     /** Save a new enquiry coming from the public contact form. */
-    public function create(string $name, string $email, string $subject, string $message): int
+    public function create(string $name, string $email, string $phone, string $subject, string $message): int
     {
         $this->run(
-            'INSERT INTO leads (name, email, subject, message, status, is_read) VALUES (?, ?, ?, ?, ?, 0)',
-            [$name, $email, $subject, $message, 'new']
+            'INSERT INTO leads (name, email, phone, subject, message, status, is_read) VALUES (?, ?, ?, ?, ?, ?, 0)',
+            [$name, $email, $phone, $subject, $message, 'new']
         );
         return (int) $this->db->lastInsertId();
     }

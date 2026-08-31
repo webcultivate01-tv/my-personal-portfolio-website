@@ -97,6 +97,7 @@ $tabs = [
                   <?php if ($isClient): ?><span class="client-tag">Client</span><?php endif; ?>
                 </span>
                 <span class="enq-from__email"><?= e($enq['email']) ?></span>
+                <?php if (!empty($enq['phone'])): ?><span class="enq-from__email"><?= e($enq['phone']) ?></span><?php endif; ?>
               </a>
             </td>
 
