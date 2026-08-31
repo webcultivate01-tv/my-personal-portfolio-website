@@ -228,3 +228,70 @@ CREATE TABLE IF NOT EXISTS project_task_notes (
   CONSTRAINT fk_project_task_notes_task FOREIGN KEY (task_id) REFERENCES project_tasks(id) ON DELETE CASCADE,
   CONSTRAINT fk_project_task_notes_user FOREIGN KEY (user_id) REFERENCES users(id)         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ------------------------------------------------------------
+--  Hosting & Domain Management
+-- ------------------------------------------------------------
+
+-- One row per hosting plan OR domain managed for a client. Domains renew
+-- exactly like hosting does, so both live here and service_type tells them
+-- apart. renewal_date drives every reminder in the module.
+CREATE TABLE IF NOT EXISTS hosting_services (
+  id                  INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  service_type        ENUM('hosting','domain') NOT NULL DEFAULT 'hosting',
+  client_id           INT UNSIGNED NULL,
+  client_name         VARCHAR(150) NOT NULL,
+  company             VARCHAR(150) NULL,
+  project_id          INT UNSIGNED NULL,
+  website_name        VARCHAR(150) NULL,
+  website_url         VARCHAR(255) NULL,
+  domain              VARCHAR(190) NULL,
+  provider            VARCHAR(120) NULL,
+  plan                VARCHAR(120) NULL,
+  account_ref         VARCHAR(120) NULL,
+  purchase_date       DATE          NULL,
+  renewal_date        DATE          NOT NULL,
+  last_renewed_at     DATE          NULL,
+  cost                DECIMAL(12,2) NULL,
+  renewal_cost        DECIMAL(12,2) NULL,
+  billing_cycle       ENUM('monthly','quarterly','half_yearly','yearly','custom') NOT NULL DEFAULT 'yearly',
+  custom_cycle_months SMALLINT UNSIGNED NULL,
+  -- Passwords are never stored here: login_url is the public panel URL and
+  -- credential_ref only says WHERE the login lives (e.g. a password manager).
+  login_url           VARCHAR(255) NULL,
+  credential_ref      VARCHAR(190) NULL,
+  notes               TEXT NULL,
+  internal_notes      TEXT NULL,
+  created_by          INT UNSIGNED NULL,
+  created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_hosting_renewal  (renewal_date),
+  KEY idx_hosting_client   (client_id),
+  KEY idx_hosting_project  (project_id),
+  KEY idx_hosting_type     (service_type),
+  KEY idx_hosting_provider (provider),
+  CONSTRAINT fk_hosting_client     FOREIGN KEY (client_id)  REFERENCES clients(id)  ON DELETE SET NULL,
+  CONSTRAINT fk_hosting_project    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL,
+  CONSTRAINT fk_hosting_created_by FOREIGN KEY (created_by) REFERENCES users(id)    ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Every renewal ever made against a service, kept forever as history.
+CREATE TABLE IF NOT EXISTS hosting_renewals (
+  id                INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  hosting_id        INT UNSIGNED NOT NULL,
+  renewal_date      DATE NOT NULL,
+  previous_expiry   DATE NULL,
+  new_expiry        DATE NOT NULL,
+  amount            DECIMAL(12,2) NULL,
+  payment_status    ENUM('unpaid','partial','paid') NOT NULL DEFAULT 'paid',
+  payment_reference VARCHAR(120) NULL,
+  notes             TEXT NULL,
+  created_by        INT UNSIGNED NULL,
+  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_hosting_renewals_service (hosting_id),
+  KEY idx_hosting_renewals_date    (renewal_date),
+  CONSTRAINT fk_hosting_renewals_service    FOREIGN KEY (hosting_id) REFERENCES hosting_services(id) ON DELETE CASCADE,
+  CONSTRAINT fk_hosting_renewals_created_by FOREIGN KEY (created_by) REFERENCES users(id)            ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

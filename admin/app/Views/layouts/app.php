@@ -13,6 +13,14 @@ $isAdmin  = \App\Core\Auth::isAdmin();
 // visible from every page until someone opens them.
 $unreadEnquiries = \App\Core\Auth::check() ? (new \App\Models\Lead())->countUnread() : 0;
 
+// Hosting renewals that have expired or fall due within a week put a red dot
+// next to "Hosting", so a lapsing renewal is visible from anywhere in the panel.
+$hostingAlerts = 0;
+if ($isAdmin) {
+    $counts        = (new \App\Models\HostingService())->alertCounts();
+    $hostingAlerts = $counts['expired'] + $counts['urgent'];
+}
+
 // Pull and clear any one-shot flash messages.
 $flashes = $_SESSION['flash'] ?? [];
 unset($_SESSION['flash']);
@@ -62,6 +70,13 @@ $is = static fn(string $key): string => $active === $key ? ' is-active' : '';
           <a class="nav-item<?= $is('clients') ?>" href="<?= url('/clients') ?>">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V7a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v14"/><path d="M13 10h6a2 2 0 0 1 2 2v9"/><path d="M1 21h22"/><path d="M6 9h2M6 13h2M6 17h2M17 14h2M17 18h2"/></svg>
             Client Management
+          </a>
+          <a class="nav-item<?= $is('hosting') ?>" href="<?= url('/hosting') ?>">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Hosting
+            <?php if ($hostingAlerts > 0): ?>
+              <span class="nav-dot" title="<?= (int) $hostingAlerts ?> hosting renewal<?= $hostingAlerts === 1 ? '' : 's' ?> need attention"></span>
+            <?php endif; ?>
           </a>
           <a class="nav-item<?= $is('users') ?>" href="<?= url('/users') ?>">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

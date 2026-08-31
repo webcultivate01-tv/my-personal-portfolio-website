@@ -16,6 +16,7 @@ class AuthController extends Controller
             'title' => 'Sign in',
             'csrf'  => $this->csrfToken(),
             'error' => $_GET['error'] ?? null,
+            'reset' => isset($_GET['reset']),
         ], 'auth');
     }
 

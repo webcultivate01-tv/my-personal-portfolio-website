@@ -29,6 +29,12 @@ class Project extends Model
         return $this->all($sql, $params);
     }
 
+    /** Just id + name + client, for "pick a project" dropdowns in other modules. */
+    public function allForSelect(): array
+    {
+        return $this->all('SELECT id, name, client_id FROM projects ORDER BY name ASC');
+    }
+
     public function find(int $id): ?array
     {
         return $this->one(

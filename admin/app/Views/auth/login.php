@@ -1,7 +1,11 @@
-<?php /** @var string $csrf  @var ?string $error */ ?>
+<?php /** @var string $csrf  @var ?string $error  @var bool $reset */ ?>
 <div class="auth-card">
   <h1 class="auth-card__title">Welcome back</h1>
   <p class="auth-card__sub">Sign in to manage your leads.</p>
+
+  <?php if (!empty($reset)): ?>
+    <div class="alert alert--success">Password updated. Sign in with your new password.</div>
+  <?php endif; ?>
 
   <?php if (!empty($error)): ?>
     <div class="alert alert--error">
@@ -22,4 +26,6 @@
 
     <button type="submit" class="btn btn--primary btn--block">Sign in</button>
   </form>
+
+  <p class="auth-card__foot"><a href="<?= url('/forgot-password') ?>">Forgot your password?</a></p>
 </div>

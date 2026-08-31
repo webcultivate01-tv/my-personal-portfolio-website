@@ -1,5 +1,8 @@
 <?php
-/** @var string $userName @var int $totalLeads @var int $newLeads @var int $wonLeads @var array $recentLeads */
+/**
+ * @var string $userName @var int $totalLeads @var int $newLeads @var int $wonLeads
+ * @var array $recentLeads @var array|null $hostingAlerts @var array $hostingUpcoming
+ */
 ?>
 <header class="page-head">
   <div>
@@ -22,6 +25,48 @@
     <span class="stat__value"><?= (int) $wonLeads ?></span>
   </div>
 </section>
+
+<?php if ($hostingAlerts !== null && $hostingAlerts['attention'] > 0): ?>
+  <!-- Hosting renewal alert — the headline numbers, so a lapsing renewal is
+       visible without opening the Hosting module. -->
+  <section class="panel panel--hosting">
+    <div class="panel__head">
+      <h2 class="panel__title">Hosting renewals</h2>
+      <a class="panel__count" href="<?= url('/hosting') ?>">View hosting &rarr;</a>
+    </div>
+    <div class="host-alert">
+      <?php if ($hostingAlerts['expired'] > 0): ?>
+        <a class="host-alert__item host-alert__item--expired" href="<?= url('/hosting') ?>?status=expired">
+          <span class="host-alert__count">🔴 <?= (int) $hostingAlerts['expired'] ?></span> Expired
+        </a>
+      <?php endif; ?>
+      <?php if ($hostingAlerts['urgent'] > 0): ?>
+        <a class="host-alert__item host-alert__item--due" href="<?= url('/hosting') ?>?status=due">
+          <span class="host-alert__count">🟠 <?= (int) $hostingAlerts['urgent'] ?></span> Due within 7 days
+        </a>
+      <?php endif; ?>
+      <?php if ($hostingAlerts['soon'] > 0): ?>
+        <a class="host-alert__item host-alert__item--soon" href="<?= url('/hosting') ?>?status=renewing_soon">
+          <span class="host-alert__count">🟡 <?= (int) $hostingAlerts['soon'] ?></span> Due within 30 days
+        </a>
+      <?php endif; ?>
+    </div>
+
+    <?php if (!empty($hostingUpcoming)): ?>
+      <div class="host-alert__list">
+        <?php foreach ($hostingUpcoming as $h): ?>
+          <?php $d = (int) $h['days_remaining']; ?>
+          <a class="host-alert__row" href="<?= url('/hosting/view') ?>?id=<?= (int) $h['id'] ?>">
+            <span><strong><?= e($h['client_name']) ?></strong> · <?= e($h['domain'] ?: ($h['website_name'] ?: '—')) ?></span>
+            <span class="days-pill days-pill--<?= e($h['status']) ?>">
+              <?= $d < 0 ? abs($d) . ' days ago' : ($d === 0 ? 'Today' : $d . ' days left') ?>
+            </span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
+  </section>
+<?php endif; ?>
 
 <section class="panel">
   <div class="panel__head">

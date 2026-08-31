@@ -4,9 +4,10 @@ A hand-rolled **MVC PHP** admin panel for managing your freelance leads.
 It ships with secure **admin login (auth)**, a dashboard, role-based **Admin
 Management**, the **Enquiry Management** module (contact-form messages, with
 Important / Client flags), the admin-only **Client Management** module
-(clients, meetings, invoices and payments), and the **Project Management**
+(clients, meetings, invoices and payments), the **Project Management**
 module (projects, tasks, assignment and per-task comments) shared by admins
-and managers.
+and managers, and the admin-only **Hosting & Domain Management** module
+(hosting/domain records, renewal countdowns and renewal reminders).
 
 ## Architecture (MVC)
 
@@ -17,12 +18,13 @@ admin/
 ├── config/config.php      # DB credentials, base path, session settings, helpers
 ├── app/
 │   ├── Core/              # The framework: Router, Controller, Model, View, Auth, Database
-│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project
-│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote
-│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, errors)
+│   ├── Controllers/       # Auth, Dashboard, User (admin mgmt), Account, Enquiry, Client, Project, Hosting
+│   ├── Models/            # User, Lead, LeadNote, Client, ClientMeeting, ClientInvoice, ClientPayment, Project, ProjectTask, ProjectTaskNote, HostingService, HostingRenewal
+│   └── Views/             # HTML templates (layouts, auth, dashboard, users, account, enquiries, clients, projects, hosting, errors)
 ├── assets/css/admin.css   # Indigo/slate professional theme
+├── assets/js/hosting.js   # Hosting forms: auto renewal date, show/hide, client autofill
 └── database/
-    ├── schema.sql                          # Fresh install: creates every table (roles + enquiries + onboarding + clients + projects)
+    ├── schema.sql                          # Fresh install: creates every table (roles + enquiries + onboarding + clients + projects + hosting)
     ├── migration_roles.sql                 # Existing install: adds the role column
     ├── migration_enquiries.sql             # Existing install: adds is_important / is_client flags
     ├── migration_onboarding.sql            # Existing install: adds hire-record + document columns
@@ -30,6 +32,7 @@ admin/
     ├── migration_clients.sql               # Existing install: adds the Client Management tables
     ├── migration_client_services_cost.sql  # Only if you ran migration_clients.sql before it had services/project_cost
     ├── migration_projects.sql              # Existing install: adds the Project Management tables
+    ├── migration_hosting.sql               # Existing install: adds the Hosting & Domain tables
     └── create_admin.php                    # One-time: creates your first login, then DELETE it
 ```
 
@@ -69,6 +72,7 @@ Two roles control who can do what:
 | **Client Management** (clients, meetings, invoices, payments) | ✅ | ❌ |
 | **Project Management** — view projects, update status/comment on own tasks | ✅ | ✅ |
 | **Project Management** — create/edit/delete projects and tasks, assign work | ✅ | ❌ |
+| **Hosting & Domain Management** (hosting/domain records, renewals) | ✅ | ❌ |
 | Add another admin **or** manager  |  ✅   |   ❌    |
 | Change their **own** password     |  ✅   |   ❌    |
 | Have their password reset by an admin | ✅ | ✅ |
@@ -291,4 +295,95 @@ Data lives in three tables — `projects`, `project_tasks` and
 
 **Upgrading an existing install:** import `database/migration_projects.sql`
 once in phpMyAdmin — it creates the three tables. Fresh installs get them
+automatically from `schema.sql`.
+
+## Hosting & Domain Management (admin only)
+
+**Hosting** (`/admin/hosting`) tracks every hosting plan **and every domain**
+you manage for a client, so a renewal is never missed. Hosting and domains
+share one module because they behave identically — both are bought from a
+provider, both expire, both need the same reminders — and a `service_type`
+field tells them apart.
+
+### How status works
+
+Nothing about status is stored in the database. It is always recalculated from
+the renewal date against today, so a record can never go stale:
+
+```
+days remaining = renewal date − today
+
+days > 30   🟢 Active
+days 8–30   🟡 Renewing Soon
+days 0–7    🔴 Renewal Due (urgent)
+days < 0    🔴 Expired
+```
+
+Anything renewed in the current calendar month also carries a 🔵 **Renewed**
+badge and is counted by the *Renewed this month* card. The two thresholds are
+the constants `HostingService::SOON_DAYS` (30) and `URGENT_DAYS` (7) — making
+them admin-configurable later means reading them from settings instead.
+
+The same day count drives the reminder wording shown on the dashboard:
+30 days → *Upcoming Renewal*, 15 → *Renewal Approaching*, 7 → *Urgent
+Renewal*, 0 → *Renewal Due Today*, past → *Expired*.
+
+### The page
+
+- **Summary cards** — Total, Active, Renewing Soon, Expired, Renewed this
+  month. Each card is a link that filters the table below it.
+- **Reminder banner** — e.g. *"3 renewals are due within the next 30 days"* —
+  jumps to the Upcoming renewals section.
+- **Upcoming renewals** — everything expired or expiring within 30 days, most
+  urgent first, with client, website, renewal date, days remaining and amount.
+- **The full table** — ordered renewal date → days left → status → client →
+  action, so the thing that decides what to act on is read first.
+- **Search** across client, company, website, domain and provider, plus filters
+  for status, type (hosting/domain), provider, billing cycle and a renewal-date
+  range, and sorting by renewal date, client name, amount or urgency.
+
+The main **dashboard** carries a compact version of the same alert (expired /
+due within 7 days / due within 30 days) with the three most urgent records, and
+the sidebar shows a red dot next to *Hosting* whenever something has expired or
+falls due inside a week.
+
+### Automatic renewal date
+
+Enter a **purchase date** and a **billing cycle** (monthly, quarterly,
+half-yearly, yearly, or a custom number of months) and the renewal date fills
+itself in — 15 Sep 2026 + 1 year → 15 Sep 2027. It is a convenience, not a
+constraint: the admin can overwrite it, and the server recalculates it anyway
+when the field is left blank, so it works with JavaScript switched off.
+
+Month-ends are clamped rather than allowed to overflow: 31 Jan + 1 month is
+28 Feb (29 Feb in a leap year), never 3 Mar.
+
+### Renewing
+
+**Mark as Renewed** on a record's page opens a short form — renewal date,
+amount, new expiry (pre-filled from the billing cycle), payment status,
+payment reference and notes. Saving it:
+
+1. moves the expiry date forward,
+2. sets the status back to Active,
+3. files the renewal in that record's **history**, and
+4. drops the record off the urgent list.
+
+The history is kept forever, so a client's full story stays answerable:
+*purchased 15 Sep 2025 → renewed 15 Sep 2026 → next due 15 Sep 2027*.
+
+### Credentials
+
+**This module never stores hosting passwords.** It keeps the control-panel
+**login URL** (public, safe) and a **pointer** to where the login actually
+lives — e.g. `Bitwarden > Hosting > abc.com`. Keep the password in your
+password manager and record only the reference here. Storing plain-text
+provider passwords in the panel database would put every client's hosting one
+database leak away from being taken over.
+
+Data lives in two tables — `hosting_services` and `hosting_renewals` — backed
+by `App\Models\HostingService` and `App\Models\HostingRenewal`.
+
+**Upgrading an existing install:** import `database/migration_hosting.sql`
+once in phpMyAdmin — it creates the two tables. Fresh installs get them
 automatically from `schema.sql`.

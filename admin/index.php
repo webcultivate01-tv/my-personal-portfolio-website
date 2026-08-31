@@ -34,12 +34,14 @@ session_start([
 // 4. Boot the router and register routes
 use App\Core\Router;
 use App\Controllers\AuthController;
+use App\Controllers\PasswordResetController;
 use App\Controllers\DashboardController;
 use App\Controllers\UserController;
 use App\Controllers\AccountController;
 use App\Controllers\EnquiryController;
 use App\Controllers\ClientController;
 use App\Controllers\ProjectController;
+use App\Controllers\HostingController;
 
 $router = new Router();
 
@@ -47,6 +49,12 @@ $router = new Router();
 $router->get('/login',   [AuthController::class, 'showLogin']);
 $router->post('/login',  [AuthController::class, 'login']);
 $router->post('/logout', [AuthController::class, 'logout']);
+
+// Forgot password (public - email lookup only, no reset mail is sent).
+$router->get('/forgot-password',  [PasswordResetController::class, 'showForgot']);
+$router->post('/forgot-password', [PasswordResetController::class, 'checkEmail']);
+$router->get('/reset-password',   [PasswordResetController::class, 'showReset']);
+$router->post('/reset-password',  [PasswordResetController::class, 'reset']);
 
 // Protected routes (Auth checked inside the controller)
 $router->get('/',        [DashboardController::class, 'index']);
@@ -85,6 +93,15 @@ $router->post('/projects/tasks/update',    [ProjectController::class, 'updateTas
 $router->post('/projects/tasks/status',    [ProjectController::class, 'updateTaskStatus']);
 $router->post('/projects/tasks/delete',    [ProjectController::class, 'destroyTask']);
 $router->post('/projects/tasks/notes',     [ProjectController::class, 'addTaskNote']);
+
+// Hosting & Domain Management (admin-only — every action calls requireAdmin())
+$router->get('/hosting',                  [HostingController::class, 'index']);
+$router->get('/hosting/view',             [HostingController::class, 'show']);
+$router->post('/hosting/create',          [HostingController::class, 'store']);
+$router->post('/hosting/update',          [HostingController::class, 'update']);
+$router->post('/hosting/delete',          [HostingController::class, 'destroy']);
+$router->post('/hosting/renew',           [HostingController::class, 'renew']);
+$router->post('/hosting/renewals/delete', [HostingController::class, 'destroyRenewal']);
 
 // Admin management (admin-only checks live inside the controller)
 $router->get('/users',                 [UserController::class, 'index']);
