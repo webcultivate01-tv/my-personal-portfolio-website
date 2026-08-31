@@ -67,12 +67,11 @@ select.form__input{cursor:pointer}
 .flash-stack{display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
 
 /* ---------- App shell ----------
-   Flexbox rather than fixed+calc: the sidebar takes its fixed basis and the
-   main column is a flex item that reliably fills every remaining pixel,
-   however wide the viewport, with no width math to get wrong. */
-.app{min-height:100vh;display:flex;align-items:stretch}
+   Sidebar is pinned to the viewport with position:fixed so it never moves
+   as the page scrolls; .main gets a matching left margin to make room. */
+.app{min-height:100vh}
 
-.sidebar{position:sticky;top:0;flex:0 0 264px;width:264px;height:100vh;display:flex;flex-direction:column;
+.sidebar{position:fixed;top:0;left:0;width:264px;height:100vh;display:flex;flex-direction:column;
   justify-content:space-between;padding:22px 16px;color:var(--slate-600);
   background:#fff;overflow-y:auto;
   border-right:1px solid var(--line)}
@@ -118,7 +117,7 @@ select.form__input{cursor:pointer}
 .avatar--lg{width:38px;height:38px;border-radius:11px;font-size:15px}
 
 /* ---------- Main content ---------- */
-.main{flex:1 1 auto;min-width:0;padding:34px 40px}
+.main{margin-left:264px;padding:34px 40px}
 .page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:26px}
 .page-head__title{margin:0;font-size:26px;font-weight:800;color:var(--slate-900)}
 .page-head__sub{margin:4px 0 0;color:var(--slate-500);font-size:14px}
@@ -419,8 +418,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .form-grid{grid-template-columns:1fr}
 }
 @media(max-width:720px){
-  .app{flex-direction:column}
-  .sidebar{position:static;flex:0 0 auto;width:auto;height:auto;flex-direction:row;align-items:center;gap:14px;
+  .sidebar{position:static;width:auto;height:auto;flex-direction:row;align-items:center;gap:14px;
     justify-content:space-between;border-right:none;border-bottom:1px solid var(--line);overflow-y:visible}
   .sidebar__top{flex:1;flex-direction:row;align-items:center;gap:8px;overflow-x:auto}
   .sidebar__brand{padding:0 8px 0 0;margin-bottom:0;border-bottom:none}
@@ -432,7 +430,7 @@ input[type="file"].form__input{padding:9px 13px;cursor:pointer}
   .user-card{padding:0}
   .user-card__meta{display:none}
   .sidebar__user .btn--block{width:auto;margin-top:0}
-  .main{padding:24px 20px}
+  .main{margin-left:0;padding:24px 20px}
   .table{display:block;overflow-x:auto;white-space:nowrap}
 
   .panel__head{align-items:stretch}
