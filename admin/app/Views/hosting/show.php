@@ -7,7 +7,9 @@
  *
  * @var string $csrf @var array $record @var array $renewals @var float $renewedSum
  * @var array $clients @var array $projects @var array $cycles @var array $payStatuses @var string $today
+ * @var bool $canManage
  */
+$canManage = $canManage ?? false;
 $money = static fn($n): string => $n === null || $n === '' ? '—' : '₹' . number_format((float) $n, 2);
 
 $daysText = static function (int $d): string {
@@ -38,8 +40,12 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
     </p>
   </div>
   <div class="row-actions">
-    <button type="button" class="btn btn--primary" data-toggle="renew-form"
-            data-label-open="Mark as Renewed" data-label-close="Cancel">Mark as Renewed</button>
+    <?php if ($canManage): ?>
+      <button type="button" class="btn btn--primary" data-toggle="renew-form"
+              data-label-open="Mark as Renewed" data-label-close="Cancel">Mark as Renewed</button>
+    <?php else: ?>
+      <span class="lock-hint">🔒 View only</span>
+    <?php endif; ?>
     <a class="btn btn--ghost btn--sm" href="<?= url('/hosting') ?>">&larr; Back to hosting</a>
   </div>
 </header>
@@ -84,6 +90,7 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
 <?php endif; ?>
 
 <!-- ---------- Mark as renewed ---------- -->
+<?php if ($canManage): ?>
 <section class="panel panel--pad" id="renew-form" hidden>
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Record a renewal</h2>
@@ -141,13 +148,16 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
     </div>
   </form>
 </section>
+<?php endif; ?>
 
 <!-- ---------- Details (read-only + edit form) ---------- -->
 <section class="panel panel--pad">
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Record details</h2>
-    <button type="button" class="btn btn--sm btn--ghost" data-toggle="details-form"
-            data-label-open="Edit details" data-label-close="Cancel">Edit details</button>
+    <?php if ($canManage): ?>
+      <button type="button" class="btn btn--sm btn--ghost" data-toggle="details-form"
+              data-label-open="Edit details" data-label-close="Cancel">Edit details</button>
+    <?php endif; ?>
   </div>
 
   <div id="details-form-view">
@@ -202,6 +212,7 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
     </div>
   </div>
 
+  <?php if ($canManage): ?>
   <form class="form-grid js-hosting-form" id="details-form" method="post" action="<?= url('/hosting/update') ?>" hidden>
     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
     <input type="hidden" name="id" value="<?= (int) $record['id'] ?>">
@@ -326,6 +337,7 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
               data-label-open="Edit details" data-label-close="Cancel">Cancel</button>
     </div>
   </form>
+  <?php endif; ?>
 </section>
 
 <!-- ---------- Renewal history ---------- -->
@@ -370,13 +382,17 @@ $heading  = $record['website_name'] ?: ($record['domain'] ?: $record['client_nam
             <td class="muted"><?= e($r['notes'] ?: '—') ?></td>
             <td class="muted"><?= e($r['recorded_by'] ?: '—') ?></td>
             <td class="ta-right">
-              <form method="post" action="<?= url('/hosting/renewals/delete') ?>" class="inline-form"
-                    onsubmit="return confirm('Remove this renewal entry? The expiry date on the record stays as it is.')">
-                <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
-                <input type="hidden" name="hosting_id" value="<?= (int) $record['id'] ?>">
-                <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
-                <button type="submit" class="btn btn--sm btn--danger">Delete</button>
-              </form>
+              <?php if ($canManage): ?>
+                <form method="post" action="<?= url('/hosting/renewals/delete') ?>" class="inline-form"
+                      onsubmit="return confirm('Remove this renewal entry? The expiry date on the record stays as it is.')">
+                  <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
+                  <input type="hidden" name="hosting_id" value="<?= (int) $record['id'] ?>">
+                  <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                  <button type="submit" class="btn btn--sm btn--danger">Delete</button>
+                </form>
+              <?php else: ?>
+                <span class="muted">—</span>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endforeach; ?>

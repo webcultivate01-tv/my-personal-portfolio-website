@@ -53,7 +53,9 @@
 <section class="panel panel--pad">
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Personal details</h2>
+    <?php if (!$canEdit): ?><span class="lock-hint">🔒 Read-only — ask an admin to change these</span><?php endif; ?>
   </div>
+  <?php if ($canEdit): ?>
   <form class="form-grid" method="post" action="<?= url('/account/profile') ?>">
     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
     <div class="field">
@@ -72,6 +74,13 @@
       <button type="submit" class="btn btn--primary">Save details</button>
     </div>
   </form>
+  <?php else: ?>
+  <div class="stat-grid stat-grid--profile">
+    <div class="stat"><span class="stat__label">Date of birth</span><span class="stat__value stat__value--sm"><?= e($user['date_of_birth'] ?: '—') ?></span></div>
+    <div class="stat"><span class="stat__label">Emergency contact name</span><span class="stat__value stat__value--sm"><?= e($user['emergency_contact_name'] ?: '—') ?></span></div>
+    <div class="stat"><span class="stat__label">Emergency contact number</span><span class="stat__value stat__value--sm"><?= e($user['emergency_contact_phone'] ?: '—') ?></span></div>
+  </div>
+  <?php endif; ?>
 </section>
 
 <section class="panel panel--pad">

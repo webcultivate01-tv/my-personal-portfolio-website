@@ -8,8 +8,9 @@
  *
  * @var string $csrf @var array $records @var array $summary @var array $upcoming
  * @var array $providers @var array $clients @var array $projects @var array $filters
- * @var array $cycles @var string $today
+ * @var array $cycles @var string $today @var bool $canManage
  */
+$canManage = $canManage ?? false;
 $money = static fn($n): string => $n === null || $n === '' ? '—' : '₹' . number_format((float) $n, 2);
 
 /** "in 12 days" / "8 days ago" / "today" — the countdown, in words. */
@@ -47,8 +48,12 @@ $within30 = $due + $soon;
     <h1 class="page-head__title">Hosting &amp; Domains</h1>
     <p class="page-head__sub">Every hosting plan and domain you manage for a client, with its renewal date and how long is left on it.</p>
   </div>
-  <button type="button" class="btn btn--primary" data-toggle="hosting-form"
-          data-label-open="+ Add Hosting" data-label-close="Cancel">+ Add Hosting</button>
+  <?php if ($canManage): ?>
+    <button type="button" class="btn btn--primary" data-toggle="hosting-form"
+            data-label-open="+ Add Hosting" data-label-close="Cancel">+ Add Hosting</button>
+  <?php else: ?>
+    <span class="lock-hint">🔒 View only</span>
+  <?php endif; ?>
 </header>
 
 <!-- ---------- Summary ---------- -->
@@ -87,6 +92,7 @@ $within30 = $due + $soon;
 <?php endif; ?>
 
 <!-- ---------- Add form ---------- -->
+<?php if ($canManage): ?>
 <section class="panel panel--pad" id="hosting-form" hidden>
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Add hosting or domain</h2>
@@ -223,6 +229,7 @@ $within30 = $due + $soon;
     </div>
   </form>
 </section>
+<?php endif; ?>
 
 <!-- ---------- Upcoming renewals ---------- -->
 <section class="panel" id="upcoming">
@@ -365,12 +372,14 @@ $within30 = $due + $soon;
             <td class="ta-right">
               <div class="row-actions">
                 <a class="btn btn--sm btn--ghost" href="<?= e($viewUrl) ?>">Open</a>
-                <form method="post" action="<?= url('/hosting/delete') ?>" class="inline-form"
-                      onsubmit="return confirm('Delete the hosting record for <?= e($r['client_name']) ?>? Its renewal history goes with it. This cannot be undone.')">
-                  <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
-                  <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
-                  <button type="submit" class="btn btn--sm btn--danger">Delete</button>
-                </form>
+                <?php if ($canManage): ?>
+                  <form method="post" action="<?= url('/hosting/delete') ?>" class="inline-form"
+                        onsubmit="return confirm('Delete the hosting record for <?= e($r['client_name']) ?>? Its renewal history goes with it. This cannot be undone.')">
+                    <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
+                    <input type="hidden" name="id" value="<?= (int) $r['id'] ?>">
+                    <button type="submit" class="btn btn--sm btn--danger">Delete</button>
+                  </form>
+                <?php endif; ?>
               </div>
             </td>
           </tr>

@@ -13,10 +13,9 @@ use App\Models\HostingService;
 /**
  * Reports — pick a report, narrow it with filters, print or save it as a PDF.
  *
- * Admins and managers both reach this page, but a report is only offered when
- * its own module is: enquiries and projects are open to managers, while the
- * client, billing and hosting reports stay admin-only, exactly like the pages
- * they draw from. Nothing here writes, so every action is a plain GET.
+ * Every report is open to admins and managers alike — reporting is one of the
+ * two things a manager is here to do (the other is leads). Nothing here writes,
+ * so every action is a plain GET; a report only ever reads.
  *
  * Generating produces a clean, print-ready page (no admin chrome) that opens
  * in a new tab and goes straight to the browser's print dialog — "Save as PDF"
@@ -27,7 +26,8 @@ class ReportController extends Controller
 {
     /**
      * Every report the module offers.
-     *   admin_only — hidden from managers, matching the source module's own rule
+     *   admin_only — hidden from managers; nothing is admin-only today, the flag
+     *                stays so a future report can be locked down without rework
      */
     private const REPORTS = [
         'enquiries' => [
@@ -43,17 +43,17 @@ class ReportController extends Controller
         'clients'   => [
             'label'      => 'Clients Report',
             'blurb'      => 'Client list with invoiced, received and outstanding totals per client.',
-            'admin_only' => true,
+            'admin_only' => false,
         ],
         'bills'     => [
             'label'      => 'Billing Report',
             'blurb'      => 'Bills raised, what was collected and what is still due, by client or project.',
-            'admin_only' => true,
+            'admin_only' => false,
         ],
         'hosting'   => [
             'label'      => 'Hosting & Domains Report',
             'blurb'      => 'Hosting and domain records with renewal dates, costs and renewal status.',
-            'admin_only' => true,
+            'admin_only' => false,
         ],
     ];
 
@@ -67,16 +67,11 @@ class ReportController extends Controller
             $type = 'enquiries';
         }
 
-        $isAdmin = Auth::isAdmin();
-
         $this->view('reports/index', [
             'title'    => 'Reports',
             'active'   => 'reports',
             'csrf'     => $this->csrfToken(),
-            'reports'  => array_filter(
-                self::REPORTS,
-                fn(array $r): bool => $isAdmin || !$r['admin_only']
-            ),
+            'reports'  => array_filter(self::REPORTS, fn(string $t): bool => $this->canAccess($t), ARRAY_FILTER_USE_KEY),
             'type'     => $type,
             'filters'  => $this->readFilters($type),
             'statuses' => Lead::STATUSES,
@@ -90,10 +85,9 @@ class ReportController extends Controller
             'hostingStatuses'   => HostingService::STATUSES,
             'hostingLabels'     => HostingService::STATUS_LABELS,
             'cycles'            => array_keys(HostingService::CYCLE_MONTHS),
-            // Dropdown sources are admin-only data, so managers never load them.
-            'clients'  => $isAdmin ? (new Client())->allForSelect() : [],
-            'projects' => $isAdmin ? (new Project())->allForSelect() : [],
-            'providers' => $isAdmin ? (new HostingService())->providers() : [],
+            'clients'   => (new Client())->allForSelect(),
+            'projects'  => (new Project())->allForSelect(),
+            'providers' => (new HostingService())->providers(),
         ]);
     }
 
@@ -426,7 +420,7 @@ class ReportController extends Controller
         }
     }
 
-    /** Managers only get the reports whose source module they can already open. */
+    /** A report is reachable unless it is flagged admin-only. */
     private function canAccess(string $type): bool
     {
         return !self::REPORTS[$type]['admin_only'] || Auth::isAdmin();

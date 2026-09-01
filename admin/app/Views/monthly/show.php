@@ -10,12 +10,15 @@
  * @var string $csrf @var array $client @var array $invoices @var array $payments
  * @var array $pauses @var array $preview @var string $periodStart @var string $periodEnd
  * @var string $dueDate @var array $frequencies @var array $methods @var array $terms
- * @var array $payMethods @var string $today @var int $payInvoiceId
+ * @var array $payMethods @var string $today @var int $payInvoiceId @var bool $canManage
  */
 
 use App\Models\MonthlyClient;
 use App\Models\MonthlyInvoice;
 use App\Models\MonthlyPayment;
+
+// Managers see this page read-only: everything that writes is hidden below.
+$canManage = $canManage ?? false;
 
 $money = static fn($n): string => $n === null || $n === '' ? '—' : '₹' . number_format((float) $n, 2);
 $date  = static fn(?string $d): string => $d ? date('j M Y', strtotime($d)) : '—';
@@ -47,14 +50,15 @@ $paidInvoices = count($invoices) - count($openInvoices);
     </p>
   </div>
   <div class="row-actions">
-    <?php if ($isActive): ?>
+    <?php if ($canManage && $isActive): ?>
       <button type="button" class="btn btn--primary" data-toggle="invoice-form"
               data-label-open="Generate invoice" data-label-close="Cancel">Generate invoice</button>
     <?php endif; ?>
-    <?php if (!empty($openInvoices)): ?>
+    <?php if ($canManage && !empty($openInvoices)): ?>
       <button type="button" class="btn btn--primary" data-toggle="payment-form"
               data-label-open="Record payment" data-label-close="Cancel">Record payment</button>
     <?php endif; ?>
+    <?php if (!$canManage): ?><span class="lock-hint">🔒 View only</span><?php endif; ?>
     <a class="btn btn--ghost btn--sm" href="<?= url('/monthly-clients') ?>">&larr; Back to monthly clients</a>
   </div>
 </header>
@@ -133,7 +137,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
 <?php endif; ?>
 
 <!-- ---------- Generate the next invoice ---------- -->
-<?php if ($isActive): ?>
+<?php if ($canManage && $isActive): ?>
   <section class="panel panel--pad" id="invoice-form" hidden>
     <div class="panel__head panel__head--plain">
       <h2 class="panel__title">Generate invoice</h2>
@@ -217,7 +221,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
 <?php endif; ?>
 
 <!-- ---------- Record a payment ---------- -->
-<?php if (!empty($openInvoices)): ?>
+<?php if ($canManage && !empty($openInvoices)): ?>
   <section class="panel panel--pad" id="payment-form" hidden>
     <div class="panel__head panel__head--plain">
       <h2 class="panel__title">Record a payment</h2>
@@ -279,6 +283,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
 <section class="panel panel--pad">
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Subscription</h2>
+    <?php if ($canManage): ?>
     <div class="row-actions">
       <?php if ($lifecycle === 'active'): ?>
         <button type="button" class="btn btn--sm btn--ghost" data-toggle="pause-form"
@@ -295,6 +300,9 @@ $paidInvoices = count($invoices) - count($openInvoices);
                 data-label-open="Reactivate client" data-label-close="Cancel">Reactivate client</button>
       <?php endif; ?>
     </div>
+    <?php else: ?>
+      <span class="lock-hint">🔒 View only</span>
+    <?php endif; ?>
   </div>
 
   <div class="stat-grid stat-grid--profile">
@@ -319,6 +327,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
     <?php endif; ?>
   </div>
 
+  <?php if ($canManage): ?>
   <!-- Pause -->
   <form class="form-grid" id="pause-form" method="post" action="<?= url('/monthly-clients/pause') ?>" hidden>
     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
@@ -415,14 +424,17 @@ $paidInvoices = count($invoices) - count($openInvoices);
               data-label-open="Reactivate client" data-label-close="Cancel">Cancel</button>
     </div>
   </form>
+  <?php endif; ?>
 </section>
 
 <!-- ---------- Details (read-only + edit form) ---------- -->
 <section class="panel panel--pad">
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Client details</h2>
-    <button type="button" class="btn btn--sm btn--ghost" data-toggle="details-form"
-            data-label-open="Edit details" data-label-close="Cancel">Edit details</button>
+    <?php if ($canManage): ?>
+      <button type="button" class="btn btn--sm btn--ghost" data-toggle="details-form"
+              data-label-open="Edit details" data-label-close="Cancel">Edit details</button>
+    <?php endif; ?>
   </div>
 
   <div id="details-form-view">
@@ -462,6 +474,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
     </div>
   </div>
 
+  <?php if ($canManage): ?>
   <form class="form-grid js-monthly-form" id="details-form" method="post" action="<?= url('/monthly-clients/update') ?>" hidden>
     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
     <input type="hidden" name="id" value="<?= (int) $client['id'] ?>">
@@ -578,6 +591,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
               data-label-open="Edit details" data-label-close="Cancel">Cancel</button>
     </div>
   </form>
+  <?php endif; ?>
 </section>
 
 <!-- ---------- Invoice history ---------- -->
@@ -631,7 +645,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
             <td class="ta-right">
               <div class="row-actions">
                 <a class="btn btn--sm btn--ghost" href="<?= url('/monthly-clients/invoice') ?>?id=<?= (int) $i['id'] ?>">Open</a>
-                <?php if ($i['status'] === 'draft'): ?>
+                <?php if ($canManage && $i['status'] === 'draft'): ?>
                   <form method="post" action="<?= url('/monthly-clients/invoices/status') ?>" class="inline-form">
                     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">
                     <input type="hidden" name="id" value="<?= (int) $i['id'] ?>">
@@ -639,7 +653,7 @@ $paidInvoices = count($invoices) - count($openInvoices);
                     <button type="submit" class="btn btn--sm btn--primary">Mark sent</button>
                   </form>
                 <?php endif; ?>
-                <?php if ($i['display_status'] !== 'cancelled' && (float) $i['amount_paid'] <= 0): ?>
+                <?php if ($canManage && $i['display_status'] !== 'cancelled' && (float) $i['amount_paid'] <= 0): ?>
                   <form method="post" action="<?= url('/monthly-clients/invoices/status') ?>" class="inline-form"
                         onsubmit="return confirm('Cancel invoice <?= e($i['invoice_number']) ?>? It stays in the history, marked cancelled.')">
                     <input type="hidden" name="csrf" value="<?= e($csrf) ?>">

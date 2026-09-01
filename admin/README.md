@@ -6,9 +6,11 @@ Management**, the **Enquiry Management** module (contact-form messages, with
 Important / Client flags), the admin-only **Client Management** module
 (clients, meetings, invoices and payments), the **Project Management**
 module (projects, tasks, assignment and per-task comments) shared by admins
-and managers, the admin-only **Hosting & Domain Management** module
-(hosting/domain records, renewal countdowns and renewal reminders), and the
-admin-only **Billing** module (printable bills raised against a client's
+and managers, the **Hosting & Domain Management** module (hosting/domain
+records, renewal countdowns and renewal reminders — managers see it read-only),
+the **Monthly Clients** module (recurring retainers, invoices, payments and
+receipts — also read-only for managers), the **Reports** module (open to both
+roles), and the admin-only **Billing** module (printable bills raised against a client's
 project the moment they pay, bill history, and PDF download).
 
 ## Architecture (MVC)
@@ -77,10 +79,15 @@ Two roles control who can do what:
 | **Client Management** (clients, meetings, invoices, payments) | ✅ | ❌ |
 | **Project Management** — view projects, update status/comment on own tasks | ✅ | ✅ |
 | **Project Management** — create/edit/delete projects and tasks, assign work | ✅ | ❌ |
-| **Hosting & Domain Management** (hosting/domain records, renewals) | ✅ | ❌ |
+| **Hosting & Domain Management** — view records, renewals and countdowns | ✅ | ✅ |
+| **Hosting & Domain Management** — add/edit/delete records, record renewals | ✅ | ❌ |
+| **Monthly Clients** — view retainers, invoices, payments, receipts | ✅ | ✅ |
+| **Monthly Clients** — add/edit clients, raise invoices, take payments, pause/cancel | ✅ | ❌ |
 | **Billing** (raise bills, view history, download PDF) | ✅ | ❌ |
+| **Reports** (every report, generate + print/save as PDF) | ✅ | ✅ |
 | Add another admin **or** manager  |  ✅   |   ❌    |
 | Change their **own** password     |  ✅   |   ❌    |
+| Edit their **own** profile details |  ✅   |   ❌    |
 | Have their password reset by an admin | ✅ | ✅ |
 
 - The **Admin Management** page (`/admin/users`) is only visible/reachable to admins.
@@ -88,6 +95,13 @@ Two roles control who can do what:
   user's password, or deletes an account.
 - A **manager cannot change their own password** — the form on *My Account* is
   replaced with a note telling them to ask an admin. Only an admin can reset it.
+- A **manager's profile is read-only**. *My Account* shows their details (date of
+  birth, emergency contact) as plain text rather than a form, and
+  `AccountController::updateProfile()` refuses a manager's POST — so an edit
+  can't be forced by hand either. An admin changes them from *Admin
+  Management → Edit*.
+- In short, a manager **manages leads and reports**; **Hosting**, **Monthly
+  Clients** and their **own profile** are read-only; everything else is closed.
 - Safety rails: you can't delete your own account, and you can't remove the last
   remaining admin (so the panel can never be left with no one who can manage it).
 
@@ -303,7 +317,13 @@ Data lives in three tables — `projects`, `project_tasks` and
 once in phpMyAdmin — it creates the three tables. Fresh installs get them
 automatically from `schema.sql`.
 
-## Hosting & Domain Management (admin only)
+## Hosting & Domain Management (admin manages, manager reads)
+
+> **Managers see this module read-only.** `index()` and `show()` only call
+> `requireAuth()`, so a manager can open Hosting and see what is due; every
+> action that writes — create, update, delete, renew, delete a renewal — still
+> starts with `requireAdmin()`. The views hide those controls behind
+> `$canManage`, but the controller checks are what actually enforce it.
 
 **Hosting** (`/admin/hosting`) tracks every hosting plan **and every domain**
 you manage for a client, so a renewal is never missed. Hosting and domains
@@ -446,7 +466,14 @@ to `clients` and `projects` for display.
 in phpMyAdmin — it creates the table. Fresh installs get it automatically
 from `schema.sql`.
 
-## Monthly Clients (admin only)
+## Monthly Clients (admin manages, manager reads)
+
+> **Managers see this module read-only.** The four read actions (`index`,
+> `show`, `invoice`, `receipt`) call `requireAuth()`, so a manager can see the
+> retainers, the invoices and what is still outstanding — and open an invoice or
+> receipt. Everything that writes (add/edit a client, raise an invoice, record a
+> payment, pause, resume, cancel, reactivate) still starts with
+> `requireAdmin()`, and the views hide those controls behind `$canManage`.
 
 **Monthly Clients** (`/admin/monthly-clients`) is one place for every client on
 a **recurring retainer**: their contract, the invoice raised for each billing

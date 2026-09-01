@@ -10,8 +10,10 @@
  * @var array $dueForBilling @var string $bucket @var array $bucketRows @var array $bucketCounts
  * @var array $recentInvoices @var array $recentPayments @var array $filters
  * @var array $frequencies @var array $methods @var array $terms
- * @var string $today @var bool $openCreateForm
+ * @var string $today @var bool $openCreateForm @var bool $canManage
  */
+
+$canManage = $canManage ?? false;
 
 use App\Models\MonthlyClient;
 use App\Models\MonthlyInvoice;
@@ -52,8 +54,12 @@ $dueToRaise = count($dueForBilling);
     <h1 class="page-head__title">Monthly Clients</h1>
     <p class="page-head__sub">Every client on a recurring retainer — their contract, the invoice for each billing cycle, what they have paid, and what is still due.</p>
   </div>
-  <button type="button" class="btn btn--primary" data-toggle="monthly-form"
-          data-label-open="+ Add Monthly Client" data-label-close="Cancel">+ Add Monthly Client</button>
+  <?php if ($canManage): ?>
+    <button type="button" class="btn btn--primary" data-toggle="monthly-form"
+            data-label-open="+ Add Monthly Client" data-label-close="Cancel">+ Add Monthly Client</button>
+  <?php else: ?>
+    <span class="lock-hint">🔒 View only</span>
+  <?php endif; ?>
 </header>
 
 <!-- ---------- Summary ---------- -->
@@ -100,6 +106,7 @@ $dueToRaise = count($dueForBilling);
 <?php endif; ?>
 
 <!-- ---------- Add a monthly client ---------- -->
+<?php if ($canManage): ?>
 <section class="panel panel--pad" id="monthly-form"<?= $openCreateForm ? '' : ' hidden' ?>>
   <div class="panel__head panel__head--plain">
     <h2 class="panel__title">Add a monthly client</h2>
@@ -229,6 +236,7 @@ $dueToRaise = count($dueForBilling);
     </div>
   </form>
 </section>
+<?php endif; ?>
 
 <!-- ---------- Invoices waiting to be raised ---------- -->
 <?php if ($dueToRaise > 0): ?>
@@ -255,7 +263,13 @@ $dueToRaise = count($dueForBilling);
             <td><strong><?= e($date($c['next_billing_date'])) ?></strong></td>
             <td><span class="days-pill days-pill--<?= e($dayClass($c['days_to_next_billing'])) ?>"><?= e($daysText($c['days_to_next_billing'])) ?></span></td>
             <td class="ta-right"><?= e($money($c['cycle_amount'])) ?></td>
-            <td class="ta-right"><a class="btn btn--sm btn--primary" href="<?= e($viewUrl) ?>#invoice-form">Generate invoice</a></td>
+            <td class="ta-right">
+              <?php if ($canManage): ?>
+                <a class="btn btn--sm btn--primary" href="<?= e($viewUrl) ?>#invoice-form">Generate invoice</a>
+              <?php else: ?>
+                <a class="btn btn--sm btn--ghost" href="<?= e($viewUrl) ?>">Open</a>
+              <?php endif; ?>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
@@ -319,7 +333,7 @@ $dueToRaise = count($dueForBilling);
             <td class="ta-right">
               <div class="row-actions">
                 <a class="btn btn--sm btn--ghost" href="<?= url('/monthly-clients/invoice') ?>?id=<?= (int) $inv['id'] ?>">Invoice</a>
-                <?php if ($inv['balance_due'] > 0 && $inv['display_status'] !== 'cancelled'): ?>
+                <?php if ($canManage && $inv['balance_due'] > 0 && $inv['display_status'] !== 'cancelled'): ?>
                   <a class="btn btn--sm btn--primary" href="<?= url('/monthly-clients/view') ?>?id=<?= (int) $inv['monthly_client_id'] ?>&pay=<?= (int) $inv['id'] ?>#payment-form">Record payment</a>
                 <?php endif; ?>
               </div>
@@ -489,7 +503,7 @@ $dueToRaise = count($dueForBilling);
             <td class="ta-right amount-paid"><?= e($money($c['total_paid'])) ?></td>
             <td class="ta-right<?= (float) $c['total_outstanding'] > 0 ? ' amount-due' : '' ?>"><?= e($money($c['total_outstanding'])) ?></td>
             <td><span class="badge badge--mc-<?= e($c['display_status']) ?>"><?= e($c['status_label']) ?></span></td>
-            <td class="ta-right"><a class="btn btn--sm btn--ghost" href="<?= e($viewUrl) ?>">Manage</a></td>
+            <td class="ta-right"><a class="btn btn--sm btn--ghost" href="<?= e($viewUrl) ?>"><?= $canManage ? 'Manage' : 'View' ?></a></td>
           </tr>
         <?php endforeach; ?>
       </tbody>

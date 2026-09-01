@@ -40,11 +40,18 @@ class AccountController extends Controller
         ]);
     }
 
-    /** Manager (or admin) updates their own self-editable fields. Locked/admin-only fields are never touched here. */
+    /** Update your own self-editable fields. Admins only — a manager's profile is read-only. */
     public function updateProfile(): void
     {
         $this->requireAuth();
         $this->verifyCsrf();
+
+        // A manager's profile is read-only: only an admin can change their details.
+        if (!Auth::isAdmin()) {
+            http_response_code(403);
+            $this->flash('error', 'Your profile is read-only. Ask an admin to update your details.');
+            $this->redirect('/account');
+        }
 
         $dob   = $this->input('date_of_birth');
         $ecName = $this->input('emergency_contact_name');

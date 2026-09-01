@@ -9,15 +9,16 @@ use App\Models\HostingService;
 use App\Models\HostingRenewal;
 
 /**
- * Hosting & Domain Management — admins only.
+ * Hosting & Domain Management — admins manage, managers read.
  *
  * Keeps one record per hosting plan or domain bought for a client, works out
  * how many days are left before it expires, and surfaces everything that
  * needs renewing so no client's hosting quietly lapses.
  *
- * Every action starts with requireAdmin(), matching Client Management: these
- * records carry costs and provider account references, so managers can
- * neither see the module in the sidebar nor reach its URLs directly.
+ * The two read actions (index, show) only call requireAuth(), so a manager can
+ * see what is due and when. Everything that writes — create, update, delete,
+ * renew — still starts with requireAdmin(), and the views hide those controls
+ * from a manager via $canManage.
  *
  * Note on credentials: this module deliberately stores no passwords. It keeps
  * the control-panel URL and a *pointer* to where the login lives (a password
@@ -28,9 +29,10 @@ class HostingController extends Controller
     /** The Hosting dashboard: summary cards, reminders, upcoming renewals, the full list. */
     public function index(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
-        $hosting = new HostingService();
+        $canManage = Auth::isAdmin();
+        $hosting   = new HostingService();
 
         $filters = [
             'q'        => trim((string) ($_GET['q'] ?? '')),
@@ -52,18 +54,20 @@ class HostingController extends Controller
             'summary'    => $hosting->summary(),
             'upcoming'   => $hosting->needingAttention(),
             'providers'  => $hosting->providers(),
-            'clients'    => (new Client())->allWithSummary(),
-            'projects'   => (new Project())->allForSelect(),
+            // Only the add/edit form needs these, and a manager never sees it.
+            'clients'    => $canManage ? (new Client())->allWithSummary() : [],
+            'projects'   => $canManage ? (new Project())->allForSelect() : [],
             'filters'    => $filters,
             'cycles'     => array_keys(HostingService::CYCLE_MONTHS),
             'today'      => date('Y-m-d'),
+            'canManage'  => $canManage,
         ]);
     }
 
     /** One record in full: client, website, hosting details and renewal history. */
     public function show(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
         $id      = (int) ($_GET['id'] ?? 0);
         $record  = (new HostingService())->find($id);
@@ -72,7 +76,8 @@ class HostingController extends Controller
             $this->redirect('/hosting');
         }
 
-        $renewals = new HostingRenewal();
+        $canManage = Auth::isAdmin();
+        $renewals  = new HostingRenewal();
 
         $this->view('hosting/show', [
             'title'       => $record['domain'] ?: $record['website_name'] ?: $record['client_name'],
@@ -81,11 +86,13 @@ class HostingController extends Controller
             'record'      => $record,
             'renewals'    => $renewals->forService($id),
             'renewedSum'  => $renewals->totalForService($id),
-            'clients'     => (new Client())->allWithSummary(),
-            'projects'    => (new Project())->allForSelect(),
+            // Only the edit form needs these, and a manager never sees it.
+            'clients'     => $canManage ? (new Client())->allWithSummary() : [],
+            'projects'    => $canManage ? (new Project())->allForSelect() : [],
             'cycles'      => array_keys(HostingService::CYCLE_MONTHS),
             'payStatuses' => HostingRenewal::PAYMENT_STATUSES,
             'today'       => date('Y-m-d'),
+            'canManage'   => $canManage,
         ]);
     }
 

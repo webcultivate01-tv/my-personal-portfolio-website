@@ -8,7 +8,12 @@ use App\Models\MonthlyInvoice;
 use App\Models\MonthlyPayment;
 
 /**
- * Monthly Clients — admins only.
+ * Monthly Clients — admins manage, managers read.
+ *
+ * The read actions (index, show, invoice, receipt) only call requireAuth(), so
+ * a manager can see the retainers, what was invoiced and what is still due.
+ * Every action that writes still starts with requireAdmin(), and the views hide
+ * those controls from a manager via $canManage.
  *
  * One place for everything about a client on a recurring retainer: their
  * contract, the invoice raised for each billing cycle, every payment taken
@@ -31,7 +36,7 @@ class MonthlyClientController extends Controller
     /** Dashboard, due/overdue buckets, recent activity and the searchable client list. */
     public function index(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
         $clients  = new MonthlyClient();
         $invoices = new MonthlyInvoice();
@@ -72,13 +77,14 @@ class MonthlyClientController extends Controller
             'terms'         => array_keys(MonthlyClient::TERM_DAYS),
             'today'         => date('Y-m-d'),
             'openCreateForm' => isset($_GET['new']),
+            'canManage'     => Auth::isAdmin(),
         ]);
     }
 
     /** One recurring client in full: details, money, invoices, payments, history. */
     public function show(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
         $id     = (int) ($_GET['id'] ?? 0);
         $client = (new MonthlyClient())->find($id);
@@ -121,6 +127,7 @@ class MonthlyClientController extends Controller
             // "Record payment" links from the dashboard carry ?pay=<invoice id>
             // so the payment form opens with that invoice already picked.
             'payInvoiceId' => (int) ($_GET['pay'] ?? 0),
+            'canManage'    => Auth::isAdmin(),
         ]);
     }
 
@@ -410,7 +417,7 @@ class MonthlyClientController extends Controller
     /** One invoice, rendered full-page and print-ready — this is also the "download PDF" view. */
     public function invoice(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
         $id      = (int) ($_GET['id'] ?? 0);
         $invoice = (new MonthlyInvoice())->find($id);
@@ -501,7 +508,7 @@ class MonthlyClientController extends Controller
     /** A payment receipt, rendered full-page and print-ready. */
     public function receipt(): void
     {
-        $this->requireAdmin();
+        $this->requireAuth();
 
         $id      = (int) ($_GET['id'] ?? 0);
         $payment = (new MonthlyPayment())->find($id);
