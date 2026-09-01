@@ -34,6 +34,55 @@ class Client extends Model
         return $this->all('SELECT id, name, company FROM clients ORDER BY name ASC');
     }
 
+    /** Balance filter keys the client list's filter bar offers. */
+    public const BALANCE_FILTERS = ['outstanding', 'paid_up'];
+
+    /**
+     * Clients narrowed by the list page's filter bar: free-text search
+     * (name/company/email/phone/services), whether they have an outstanding
+     * balance, and sort order. Any filter left blank is skipped.
+     */
+    public function search(array $f = []): array
+    {
+        $where  = [];
+        $params = [];
+
+        $q = trim((string) ($f['q'] ?? ''));
+        if ($q !== '') {
+            $where[] = '(c.name LIKE ? OR c.company LIKE ? OR c.email LIKE ? OR c.phone LIKE ? OR c.services LIKE ?)';
+            $like    = '%' . $q . '%';
+            array_push($params, $like, $like, $like, $like, $like);
+        }
+
+        $sql = "SELECT c.*,
+                       (SELECT COUNT(*) FROM client_meetings m WHERE m.client_id = c.id) AS meeting_count,
+                       (SELECT COALESCE(SUM(i.amount), 0) FROM client_invoices i
+                          WHERE i.client_id = c.id AND i.status != 'cancelled') AS total_invoiced,
+                       (SELECT COALESCE(SUM(p.amount), 0) FROM client_payments p WHERE p.client_id = c.id) AS total_paid
+                FROM clients c";
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+
+        $balance = (string) ($f['balance'] ?? '');
+        if ($balance === 'outstanding') {
+            $sql .= ' HAVING (total_invoiced - total_paid) > 0';
+        } elseif ($balance === 'paid_up') {
+            $sql .= ' HAVING (total_invoiced - total_paid) <= 0';
+        }
+
+        $sorts = [
+            'name'         => 'c.name ASC',
+            'outstanding'  => '(total_invoiced - total_paid) DESC',
+            'project_cost' => 'c.project_cost DESC',
+            'meetings'     => 'meeting_count DESC',
+            'newest'       => 'c.created_at DESC',
+        ];
+        $sql .= ' ORDER BY ' . ($sorts[(string) ($f['sort'] ?? 'name')] ?? $sorts['name']) . ', c.id DESC';
+
+        return $this->all($sql, $params);
+    }
+
     public function totalCount(): int
     {
         $row = $this->one('SELECT COUNT(*) AS c FROM clients');

@@ -2,19 +2,25 @@
 /**
  * @var string $csrf @var array $projects @var string $status @var array $myOpenTasks
  * @var int $totalCount @var int $planningCount @var int $inProgressCount @var int $completedCount
- * @var array $clients @var array $projectStatuses @var array $projectPriorities
+ * @var array $clients @var array $filterClients @var array $projectStatuses @var array $projectPriorities
+ * @var array $filters
  */
 $isAdmin = \App\Core\Auth::isAdmin();
 $today   = date('Y-m-d');
-
-/** Build a filter-tab URL. */
-$tab = static fn(string $key): string => url('/projects') . ($key === 'all' ? '' : '?status=' . $key);
 
 /** Filter tabs: key => label. */
 $tabs = ['all' => 'All'];
 foreach ($projectStatuses as $s) {
     $tabs[$s] = ucwords(str_replace('_', ' ', $s));
 }
+
+/** Rebuild the project list URL with one filter changed — keeps the others intact. */
+$withFilter = static function (array $changes) use ($filters): string {
+    $q = array_filter(array_merge($filters, $changes), static fn($v): bool => $v !== '' && $v !== 0 && $v !== 'all');
+    return url('/projects') . ($q ? '?' . http_build_query($q) : '');
+};
+
+$hasFilters = $filters['q'] !== '' || $filters['client_id'] > 0 || $filters['priority'] !== '' || $filters['status'] !== 'all';
 ?>
 <header class="page-head">
   <div>
@@ -138,15 +144,43 @@ foreach ($projectStatuses as $s) {
   <div class="panel__head">
     <div class="filter-tabs">
       <?php foreach ($tabs as $key => $label): ?>
-        <a class="filter-tab<?= $status === $key ? ' is-active' : '' ?>" href="<?= e($tab($key)) ?>"><?= e($label) ?></a>
+        <a class="filter-tab<?= $status === $key ? ' is-active' : '' ?>" href="<?= e($withFilter(['status' => $key])) ?>"><?= e($label) ?></a>
       <?php endforeach; ?>
     </div>
     <span class="panel__count"><?= count($projects) ?> shown</span>
   </div>
 
+  <form class="filter-bar" method="get" action="<?= url('/projects') ?>">
+    <input type="hidden" name="status" value="<?= e($filters['status']) ?>">
+    <input class="form__input filter-bar__search" type="search" name="q" value="<?= e($filters['q']) ?>"
+           placeholder="Search project name, description or client…">
+    <select class="form__input" name="client_id">
+      <option value="">All clients</option>
+      <?php foreach ($filterClients as $c): ?>
+        <option value="<?= (int) $c['id'] ?>"<?= $filters['client_id'] === (int) $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <select class="form__input" name="priority">
+      <option value="">All priorities</option>
+      <?php foreach ($projectPriorities as $p): ?>
+        <option value="<?= e($p) ?>"<?= $filters['priority'] === $p ? ' selected' : '' ?>><?= e(ucfirst($p)) ?></option>
+      <?php endforeach; ?>
+    </select>
+    <select class="form__input" name="sort">
+      <option value="newest"<?= $filters['sort'] === 'newest' ? ' selected' : '' ?>>Sort: newest</option>
+      <option value="name"<?= $filters['sort'] === 'name' ? ' selected' : '' ?>>Sort: name</option>
+      <option value="due_date"<?= $filters['sort'] === 'due_date' ? ' selected' : '' ?>>Sort: due date</option>
+      <option value="priority"<?= $filters['sort'] === 'priority' ? ' selected' : '' ?>>Sort: priority</option>
+    </select>
+    <button type="submit" class="btn btn--sm btn--primary">Apply</button>
+    <a class="btn btn--sm btn--ghost" href="<?= url('/projects') ?>">Reset</a>
+  </form>
+
   <?php if (empty($projects)): ?>
     <p class="empty">
-      <?php if ($isAdmin): ?>
+      <?php if ($hasFilters): ?>
+        Nothing matches those filters. <a href="<?= url('/projects') ?>">Clear them</a> to see every project.
+      <?php elseif ($isAdmin): ?>
         No projects yet. Use <strong>+ New project</strong> above to create your first one — then add tasks and assign them to your team.
       <?php else: ?>
         No projects to show yet.

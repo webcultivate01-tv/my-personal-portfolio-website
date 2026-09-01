@@ -19,33 +19,46 @@ use App\Models\Bill;
  */
 class ClientController extends Controller
 {
-    /** The client list with per-client meeting counts and money totals. */
+    /** The client list with per-client meeting counts and money totals, searchable/filterable. */
     public function index(): void
     {
         $this->requireAdmin();
 
-        $clients = (new Client())->allWithSummary();
+        $clientModel = new Client();
+        $allClients  = $clientModel->allWithSummary();
 
         $totalCost     = 0.0;
         $totalInvoiced = 0.0;
         $totalPaid     = 0.0;
         $totalMeetings = 0;
-        foreach ($clients as $c) {
+        foreach ($allClients as $c) {
             $totalCost     += (float) $c['project_cost'];
             $totalInvoiced += (float) $c['total_invoiced'];
             $totalPaid     += (float) $c['total_paid'];
             $totalMeetings += (int) $c['meeting_count'];
         }
 
+        $filters = [
+            'q'       => trim((string) ($_GET['q'] ?? '')),
+            'balance' => (string) ($_GET['balance'] ?? ''),
+            'sort'    => (string) ($_GET['sort'] ?? 'name'),
+            'dir'     => (string) ($_GET['dir'] ?? 'asc'),
+        ];
+        if (!in_array($filters['balance'], Client::BALANCE_FILTERS, true)) {
+            $filters['balance'] = '';
+        }
+
         $this->view('clients/index', [
             'title'         => 'Client Management',
             'active'        => 'clients',
             'csrf'          => $this->csrfToken(),
-            'clients'       => $clients,
+            'clients'       => $clientModel->search($filters),
+            'totalClients'  => count($allClients),
             'totalCost'     => $totalCost,
             'totalInvoiced' => $totalInvoiced,
             'totalPaid'     => $totalPaid,
             'totalMeetings' => $totalMeetings,
+            'filters'       => $filters,
         ]);
     }
 

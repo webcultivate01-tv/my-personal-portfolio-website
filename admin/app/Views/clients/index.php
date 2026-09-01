@@ -1,9 +1,11 @@
 <?php
 /**
- * @var string $csrf @var array $clients
+ * @var string $csrf @var array $clients @var int $totalClients
  * @var float $totalCost @var float $totalInvoiced @var float $totalPaid @var int $totalMeetings
+ * @var array $filters
  */
 $money = static fn(float $n): string => '₹' . number_format($n, 2);
+$hasFilters = $filters['q'] !== '' || $filters['balance'] !== '';
 ?>
 <header class="page-head">
   <div>
@@ -14,7 +16,7 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
 </header>
 
 <section class="stat-grid">
-  <div class="stat"><span class="stat__label">Clients</span><span class="stat__value"><?= count($clients) ?></span></div>
+  <div class="stat"><span class="stat__label">Clients</span><span class="stat__value"><?= (int) $totalClients ?></span></div>
   <div class="stat"><span class="stat__label">Meetings</span><span class="stat__value"><?= (int) $totalMeetings ?></span></div>
   <div class="stat"><span class="stat__label">Project value</span><span class="stat__value stat__value--money"><?= e($money($totalCost)) ?></span></div>
   <div class="stat"><span class="stat__label">Invoiced</span><span class="stat__value stat__value--money"><?= e($money($totalInvoiced)) ?></span></div>
@@ -78,11 +80,36 @@ $money = static fn(float $n): string => '₹' . number_format($n, 2);
 <section class="panel">
   <div class="panel__head">
     <h2 class="panel__title">All clients</h2>
-    <span class="panel__count"><?= count($clients) ?> total</span>
+    <span class="panel__count"><?= count($clients) ?> shown</span>
   </div>
 
+  <form class="filter-bar" method="get" action="<?= url('/clients') ?>">
+    <input class="form__input filter-bar__search" type="search" name="q" value="<?= e($filters['q']) ?>"
+           placeholder="Search name, company, email, phone or services…">
+    <select class="form__input" name="balance">
+      <option value="">Any balance</option>
+      <option value="outstanding"<?= $filters['balance'] === 'outstanding' ? ' selected' : '' ?>>Outstanding balance</option>
+      <option value="paid_up"<?= $filters['balance'] === 'paid_up' ? ' selected' : '' ?>>Fully paid</option>
+    </select>
+    <select class="form__input" name="sort">
+      <option value="name"<?= $filters['sort'] === 'name' ? ' selected' : '' ?>>Sort: name</option>
+      <option value="outstanding"<?= $filters['sort'] === 'outstanding' ? ' selected' : '' ?>>Sort: outstanding</option>
+      <option value="project_cost"<?= $filters['sort'] === 'project_cost' ? ' selected' : '' ?>>Sort: project cost</option>
+      <option value="meetings"<?= $filters['sort'] === 'meetings' ? ' selected' : '' ?>>Sort: meetings</option>
+      <option value="newest"<?= $filters['sort'] === 'newest' ? ' selected' : '' ?>>Sort: newest</option>
+    </select>
+    <button type="submit" class="btn btn--sm btn--primary">Apply</button>
+    <a class="btn btn--sm btn--ghost" href="<?= url('/clients') ?>">Reset</a>
+  </form>
+
   <?php if (empty($clients)): ?>
-    <p class="empty">No clients yet. Use <strong>+ Add new client</strong> above to create your first one — then you can log meetings, raise invoices and record payments against them.</p>
+    <p class="empty">
+      <?php if ($hasFilters): ?>
+        Nothing matches those filters. <a href="<?= url('/clients') ?>">Clear them</a> to see every client.
+      <?php else: ?>
+        No clients yet. Use <strong>+ Add new client</strong> above to create your first one — then you can log meetings, raise invoices and record payments against them.
+      <?php endif; ?>
+    </p>
   <?php else: ?>
     <table class="table">
       <thead>

@@ -20,7 +20,7 @@ use App\Models\User;
  */
 class ProjectController extends Controller
 {
-    /** The project list, optionally filtered by status. */
+    /** The project list, searchable and filterable by status, client and priority. */
     public function index(): void
     {
         $this->requireAuth();
@@ -28,20 +28,36 @@ class ProjectController extends Controller
         $status = $_GET['status'] ?? 'all';
         $status = in_array($status, Project::STATUSES, true) ? $status : 'all';
 
+        $filters = [
+            'status'    => $status,
+            'q'         => trim((string) ($_GET['q'] ?? '')),
+            'client_id' => (int) ($_GET['client_id'] ?? 0),
+            'priority'  => (string) ($_GET['priority'] ?? ''),
+            'sort'      => (string) ($_GET['sort'] ?? 'newest'),
+        ];
+        if (!in_array($filters['priority'], Project::PRIORITIES, true)) {
+            $filters['priority'] = '';
+        }
+        if (!in_array($filters['sort'], Project::SORTS, true)) {
+            $filters['sort'] = 'newest';
+        }
+
         $projects = new Project();
 
         $this->view('projects/index', [
             'title'          => 'Project Management',
             'active'         => 'projects',
             'csrf'           => $this->csrfToken(),
-            'projects'       => $projects->allWithSummary($status),
+            'projects'       => $projects->search($filters),
             'status'         => $status,
+            'filters'        => $filters,
             'totalCount'     => $projects->totalCount(),
             'planningCount'  => $projects->countByStatus('planning'),
             'inProgressCount'=> $projects->countByStatus('in_progress'),
             'completedCount' => $projects->countByStatus('completed'),
             'myOpenTasks'    => (new ProjectTask())->forAssignee((int) Auth::id()),
             'clients'        => Auth::isAdmin() ? (new Client())->allWithSummary() : [],
+            'filterClients'  => (new Client())->allForSelect(),
             'projectStatuses'   => Project::STATUSES,
             'projectPriorities' => Project::PRIORITIES,
         ]);

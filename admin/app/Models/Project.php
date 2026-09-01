@@ -12,20 +12,61 @@ class Project extends Model
     public const STATUSES  = ['planning', 'in_progress', 'on_hold', 'completed', 'cancelled'];
     public const PRIORITIES = ['low', 'medium', 'high'];
 
-    /** Every project with task counts, newest first. Optionally narrowed by status. */
-    public function allWithSummary(string $status = 'all'): array
+    /** Sort keys the project list's filter bar offers. */
+    public const SORTS = ['newest', 'name', 'due_date', 'priority'];
+
+    /**
+     * Projects narrowed by the list page's filter bar: status tab, free-text
+     * search (name/description/client), client, priority, and sort order.
+     * Any filter left blank/'all' is skipped.
+     */
+    public function search(array $f = []): array
     {
+        $where  = [];
+        $params = [];
+
+        $status = (string) ($f['status'] ?? 'all');
+        if (in_array($status, self::STATUSES, true)) {
+            $where[]  = 'p.status = ?';
+            $params[] = $status;
+        }
+
+        $q = trim((string) ($f['q'] ?? ''));
+        if ($q !== '') {
+            $where[] = '(p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?)';
+            $like    = '%' . $q . '%';
+            array_push($params, $like, $like, $like);
+        }
+
+        $clientId = (int) ($f['client_id'] ?? 0);
+        if ($clientId > 0) {
+            $where[]  = 'p.client_id = ?';
+            $params[] = $clientId;
+        }
+
+        $priority = (string) ($f['priority'] ?? '');
+        if (in_array($priority, self::PRIORITIES, true)) {
+            $where[]  = 'p.priority = ?';
+            $params[] = $priority;
+        }
+
         $sql = "SELECT p.*, c.name AS client_name,
                        (SELECT COUNT(*) FROM project_tasks t WHERE t.project_id = p.id) AS task_count,
                        (SELECT COUNT(*) FROM project_tasks t WHERE t.project_id = p.id AND t.status = 'done') AS done_count
                 FROM projects p
                 LEFT JOIN clients c ON c.id = p.client_id";
-        $params = [];
-        if (in_array($status, self::STATUSES, true)) {
-            $sql .= ' WHERE p.status = ?';
-            $params[] = $status;
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
         }
-        $sql .= ' ORDER BY p.created_at DESC';
+
+        $sorts = [
+            'newest'   => 'p.created_at DESC',
+            'name'     => 'p.name ASC',
+            'due_date' => 'p.due_date IS NULL, p.due_date ASC',
+            'priority' => "FIELD(p.priority, 'high', 'medium', 'low')",
+        ];
+        $sql .= ' ORDER BY ' . ($sorts[(string) ($f['sort'] ?? 'newest')] ?? $sorts['newest']);
+
         return $this->all($sql, $params);
     }
 
