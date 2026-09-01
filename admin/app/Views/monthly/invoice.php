@@ -80,7 +80,8 @@ $paid    = (float) $invoice['amount_paid'];
   .footer { margin-top: 34px; text-align: center; font-size: 11.5px; color: #94a3b8; }
 
   @media print {
-    body { background: #fff; padding: 0; }
+    @page { margin: 0; }
+    body { background: #fff; padding: 15mm 12mm; }
     .toolbar { display: none; }
     .sheet { box-shadow: none; border-radius: 0; max-width: none; padding: 0; }
   }

@@ -71,9 +71,11 @@ $priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
   .footer { margin-top: 34px; text-align: center; font-size: 11.5px; color: #94a3b8; }
 
   @media print {
-    body { background: #fff; padding: 0; }
+    @page { margin: 0; }
+    body { background: #fff; padding: 15mm 12mm; }
     .toolbar { display: none; }
     .sheet { box-shadow: none; border-radius: 0; max-width: none; padding: 0; }
+    .footer { position: fixed; bottom: 8mm; left: 12mm; right: 12mm; margin-top: 0; }
   }
 </style>
 </head>
@@ -160,8 +162,7 @@ $priorPaid = (float) $bill['total_paid'] - (float) $bill['amount_paid'];
     <?php endif; ?>
 
     <div class="footer">
-      Thank you for choosing Tejas Mehar.<br>
-      This is a computer-generated invoice and does not require a signature.
+      Thank you for choosing Tejas Mehar.
     </div>
   </div>
 
