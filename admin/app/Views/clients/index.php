@@ -4,7 +4,7 @@
  * @var float $totalCost @var float $totalInvoiced @var float $totalPaid @var int $totalMeetings
  * @var array $filters
  */
-$money = static fn(float $n): string => '₹' . number_format($n, 2);
+$money = static fn(float $n): string => '₹' . number_format(abs($n), 2);
 $hasFilters = $filters['q'] !== '' || $filters['balance'] !== '';
 ?>
 <header class="page-head">
