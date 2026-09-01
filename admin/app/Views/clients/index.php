@@ -4,7 +4,7 @@
  * @var float $totalCost @var float $totalInvoiced @var float $totalPaid @var int $totalMeetings
  * @var array $filters
  */
-$money = static fn(float $n): string => '₹' . number_format(abs($n), 2);
+$money = static fn(float $n): string => '₹' . number_format($n, 2);
 $hasFilters = $filters['q'] !== '' || $filters['balance'] !== '';
 ?>
 <header class="page-head">
@@ -23,7 +23,7 @@ $hasFilters = $filters['q'] !== '' || $filters['balance'] !== '';
   <div class="stat"><span class="stat__label">Received</span><span class="stat__value stat__value--money"><?= e($money($totalPaid)) ?></span></div>
   <div class="stat<?= ($totalInvoiced - $totalPaid) > 0 ? ' stat--alert' : '' ?>">
     <span class="stat__label">Outstanding</span>
-    <span class="stat__value stat__value--money"><?= e($money($totalInvoiced - $totalPaid)) ?></span>
+    <span class="stat__value stat__value--money"><?= e($money(max($totalInvoiced - $totalPaid, 0.0))) ?></span>
   </div>
 </section>
 
@@ -124,7 +124,7 @@ $hasFilters = $filters['q'] !== '' || $filters['balance'] !== '';
         <?php foreach ($clients as $c): ?>
           <?php
             $viewUrl     = url('/clients/view') . '?id=' . (int) $c['id'];
-            $outstanding = (float) $c['total_invoiced'] - (float) $c['total_paid'];
+            $outstanding = max((float) $c['total_invoiced'] - (float) $c['total_paid'], 0.0);
           ?>
           <tr>
             <td>

@@ -6,8 +6,8 @@
  * @var string $csrf @var array $client @var array $meetings @var array $invoices @var array $payments
  * @var array $bills @var float $invoiced @var float $paid @var array $statuses @var array $methods
  */
-$money       = static fn(float $n): string => '₹' . number_format(abs($n), 2);
-$outstanding = $invoiced - $paid;
+$money       = static fn(float $n): string => '₹' . number_format($n, 2);
+$outstanding = max($invoiced - $paid, 0.0);
 $cost        = $client['project_cost'] !== null ? (float) $client['project_cost'] : null;
 $toInvoice   = $cost !== null ? $cost - $invoiced : null;
 $today       = date('Y-m-d');
